@@ -1,0 +1,416 @@
+require('dotenv').config();
+const express = require('express');
+const http = require('http');
+const { WebSocketServer } = require('ws');
+const jwt = require('jsonwebtoken');
+const axios = require('axios');
+const https = require('https');
+const cors = require('cors');
+
+const app = express();
+const server = http.createServer(app);
+
+// ====================
+// CRITICAL CONFIGURATION
+// ====================
+const PORT = process.env.PORT || 3000;
+const PYTHON_BACKEND = process.env.PYTHON_BACKEND || 'https://echo-backend.up.railway.app';
+
+// SECURITY: Fail fast if JWT secret is not set
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  console.error('❌ FATAL: JWT_SECRET environment variable is not set.');
+  console.error('   Set it in Railway dashboard: Settings → Variables');
+  process.exit(1);
+}
+
+// ====================
+// PERFORMANCE OPTIMIZATIONS
+// ====================
+const axiosInstance = axios.create({
+  baseURL: PYTHON_BACKEND,
+  timeout: 10000, // 10 second timeout
+  httpsAgent: new https.Agent({
+    keepAlive: true,
+    keepAliveMsecs: 1000,
+    maxSockets: 100,
+    maxFreeSockets: 20,
+    timeout: 10000,
+    freeSocketTimeout: 30000
+  }),
+  maxRedirects: 0,
+  headers: {
+    'X-Forwarded-By': 'echo-gateway-v1.6'
+  }
+});
+
+// ====================
+// OPTIMIZED MIDDLEWARE
+// ====================
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+app.use(express.json({ 
+  limit: '2mb',
+  verify: (req, res, buf) => {
+    req.rawBody = buf.toString();
+  }
+}));
+
+app.use(express.urlencoded({ extended: false, limit: '2mb' }));
+
+// ALWAYS LOG ALL REQUESTS (not just in development)
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`);
+  next();
+});
+
+// ====================
+// FAST AUTHENTICATION MIDDLEWARE
+// ====================
+const authenticate = (req, res, next) => {
+  // Use requestPath for better matching
+  const requestPath = req.path.toLowerCase();
+  const publicPaths = ['/login', '/register', '/health', '/'];
+  
+  // Exact match for public routes
+  if (publicPaths.includes(requestPath) || requestPath.startsWith('/health')) {
+    return next();
+  }
+
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({
+      success: false,
+      error: 'Access denied. No token provided.',
+      code: 'NO_TOKEN'
+    });
+  }
+
+  const token = authHeader.split(' ')[1];
+  
+  try {
+    // FAST VERIFICATION: Verify signature only
+    const decoded = jwt.verify(token, JWT_SECRET, { ignoreExpiration: false });
+    
+    // Simple user object creation
+    req.user = {
+      id: decoded.user_id || decoded.userId || decoded.id,
+      email: decoded.email,
+      role: decoded.role,
+      schoolId: decoded.school_id || decoded.schoolId
+    };
+    
+    console.log(`🔐 Auth successful for user: ${req.user.id}, role: ${req.user.role}`);
+    next();
+  } catch (error) {
+    console.error(`🔐 Auth failed: ${error.message}`);
+    const isExpired = error.name === 'TokenExpiredError';
+    return res.status(401).json({
+      success: false,
+      error: isExpired ? 'Token expired. Please login again.' : 'Invalid token.',
+      code: isExpired ? 'TOKEN_EXPIRED' : 'INVALID_TOKEN'
+    });
+  }
+};
+
+// ====================
+// SIMPLIFIED WEBSOCKET
+// ====================
+const wss = new WebSocketServer({ server, path: '/ws' });
+const activeConnections = new Map();
+
+wss.on('connection', (ws, req) => {
+  try {
+    const url = require('url').parse(req.url, true);
+    const token = url.query.token;
+
+    if (!token) {
+      ws.close(1008, 'No token');
+      return;
+    }
+
+    const decoded = jwt.verify(token, JWT_SECRET, { ignoreExpiration: false });
+    const userId = decoded.user_id || decoded.userId || decoded.id;
+    
+    if (!userId) {
+      ws.close(1008, 'Invalid token');
+      return;
+    }
+
+    activeConnections.set(userId.toString(), ws);
+    console.log(`✅ WebSocket: User ${userId} connected`);
+
+    ws.on('message', (data) => {
+      try {
+        const message = JSON.parse(data.toString());
+        if (message.type === 'ping') {
+          ws.send(JSON.stringify({ 
+            type: 'pong', 
+            timestamp: new Date().toISOString() 
+          }));
+        }
+      } catch (error) {
+        ws.send(JSON.stringify({
+          type: 'error',
+          error: 'Invalid message format'
+        }));
+      }
+    });
+
+    ws.on('close', () => {
+      activeConnections.delete(userId.toString());
+      console.log(`⚠️ WebSocket: User ${userId} disconnected`);
+    });
+
+  } catch (error) {
+    console.log('WebSocket auth failed:', error.message);
+    ws.close(1008, 'Auth failed');
+  }
+});
+
+// ====================
+// OPTIMIZED PROXY FUNCTION - WITH DEBUG LOGGING
+// ====================
+const createProxyHandler = (requiresAuth = true) => {
+  return async (req, res) => {
+    const startTime = Date.now();
+    const requestId = Date.now().toString(36) + Math.random().toString(36).substr(2);
+    
+    console.log(`[${requestId}] 📥 ENTRY ${req.method} ${req.originalUrl} (requiresAuth: ${requiresAuth})`);
+    
+    if (requiresAuth) {
+      return authenticate(req, res, () => {
+        handleProxyRequest(req, res, startTime, requestId);
+      });
+    } else {
+      return handleProxyRequest(req, res, startTime, requestId);
+    }
+  };
+};
+
+// Fast proxy request handler - WITH UNCONDITIONAL LOGGING
+async function handleProxyRequest(req, res, startTime, requestId) {
+  console.log(`[${requestId}] 🚀 START ${req.method} ${req.originalUrl} | Auth: ${req.user ? 'YES' : 'NO'}`);
+  
+  try {
+    console.log(`[${requestId}] 📦 Headers received:`, {
+      'Content-Type': req.headers['content-type'],
+      'Authorization': req.headers['authorization'] ? 'PRESENT' : 'MISSING',
+      'Body-Size': req.body ? JSON.stringify(req.body).length : 0
+    });
+    
+    // CRITICAL FIX: Simple headers that won't break Flask
+    const headers = {
+      'Content-Type': req.headers['content-type'] || 'application/json',
+      'Authorization': req.headers['authorization'] || '',
+      'X-User-ID': req.user?.id || '',
+      'X-User-Role': req.user?.role || '',
+      'X-Request-ID': requestId,
+      'Host': new URL(PYTHON_BACKEND).host
+    };
+    
+    console.log(`[${requestId}] 🔄 Calling Flask: ${req.method} ${req.originalUrl}`);
+    console.log(`[${requestId}] 📤 Headers to Flask:`, JSON.stringify(headers, null, 2));
+    
+    const response = await axiosInstance({
+      method: req.method,
+      url: req.originalUrl,
+      data: req.body,
+      params: req.query,
+      headers: headers,
+      validateStatus: () => true
+    });
+
+    const duration = Date.now() - startTime;
+    
+    console.log(`[${requestId}] ✅ COMPLETE ${req.method} ${req.originalUrl} ${response.status} ${duration}ms`);
+    
+    // Forward response
+    res.status(response.status).json(response.data);
+    
+  } catch (error) {
+    const duration = Date.now() - startTime;
+    
+    console.error(`[${requestId}] 🔴 ERROR ${req.method} ${req.originalUrl} (${duration}ms):`, error.code || error.message);
+    console.error(`[${requestId}] Stack trace:`, error.stack);
+    
+    if (error.code === 'ECONNABORTED') {
+      res.status(504).json({
+        success: false,
+        error: 'Backend timeout',
+        code: 'BACKEND_TIMEOUT',
+        path: req.originalUrl,
+        requestId: requestId
+      });
+    } else if (error.response) {
+      console.error(`[${requestId}] Flask response error:`, error.response.status, error.response.data);
+      // Forward error response from backend
+      res.status(error.response.status).json(error.response.data);
+    } else {
+      res.status(502).json({
+        success: false,
+        error: 'Backend service unavailable',
+        code: 'BACKEND_ERROR',
+        path: req.originalUrl,
+        duration: duration,
+        requestId: requestId
+      });
+    }
+  }
+}
+
+// ====================
+// ROUTE DEFINITIONS - OPTIMIZED
+// ====================
+
+// Public routes (fast path)
+app.all('/login', createProxyHandler(false));
+app.all('/register', createProxyHandler(false));
+
+// Authentication required routes
+app.all('/create-and-join', createProxyHandler(true));
+app.all('/join', createProxyHandler(true));
+
+// School routes
+app.all('/schools*', createProxyHandler(true));
+
+// Resource routes - using wildcards for all subpaths
+app.all('/teachers*', createProxyHandler(true));
+app.all('/students*', createProxyHandler(true));
+app.all('/classes*', createProxyHandler(true));
+app.all('/subjects*', createProxyHandler(true));
+app.all('/users*', createProxyHandler(true));
+app.all('/dashboard*', createProxyHandler(true));
+app.all('/utils*', createProxyHandler(true));
+
+// Dynamic routes (school_id, etc.)
+app.all('/:schoolId*', (req, res, next) => {
+  // Check if this is a dynamic school route
+  if (req.params.schoolId && req.params.schoolId.length > 10) {
+    return createProxyHandler(true)(req, res);
+  }
+  next(); // Pass to 404 if not a valid school ID
+});
+
+// ====================
+// HEALTH & INFO ENDPOINTS
+// ====================
+app.get('/health', async (req, res) => {
+  const startTime = Date.now();
+  
+  const healthData = {
+    success: true,
+    service: 'Echo Gateway - Debug v1.6',
+    status: 'healthy',
+    timestamp: new Date().toISOString(),
+    performance: {
+      websocket: wss.clients.size,
+      active_connections: activeConnections.size,
+      uptime: process.uptime()
+    },
+    backend: 'checking',
+    gateway_response_time: 0,
+    fixes: [
+      'Removed connection: close header that caused /join timeouts',
+      'Simplified proxy headers for Flask compatibility',
+      'Added UNCONDITIONAL logging for debugging',
+      'Always logs all requests regardless of NODE_ENV'
+    ]
+  };
+  
+  try {
+    // Fast health check with timeout
+    const backendResponse = await axios.get(`${PYTHON_BACKEND}/health`, { 
+      timeout: 3000 
+    });
+    healthData.backend = 'connected';
+    healthData.backend_details = backendResponse.data;
+  } catch (error) {
+    healthData.backend = 'disconnected';
+    healthData.status = 'degraded';
+    healthData.backend_error = error.message;
+  }
+  
+  healthData.gateway_response_time = Date.now() - startTime;
+  res.status(200).json(healthData);
+});
+
+app.get('/', (req, res) => {
+  res.json({
+    service: 'Echo Schools Platform Gateway',
+    version: '1.6 - Debug Version',
+    status: 'ACTIVE DEBUG LOGGING ENABLED',
+    performance: 'Connection pooling enabled, 10s timeout',
+    note: 'All routes except /login and /register require Authorization: Bearer <token> header',
+    debug_info: 'UNCONDITIONAL LOGGING ENABLED - Check Railway logs for request details'
+  });
+});
+
+// ====================
+// OPTIMIZED ERROR HANDLER
+// ====================
+app.use((err, req, res, next) => {
+  console.error('🔴 Gateway error:', err.message, err.stack);
+  res.status(500).json({
+    success: false,
+    error: 'Internal gateway error',
+    code: 'GATEWAY_ERROR',
+    message: err.message
+  });
+});
+
+// Fast 404 handler
+app.use((req, res) => {
+  console.log(`❌ 404: ${req.method} ${req.originalUrl}`);
+  res.status(404).json({
+    success: false,
+    error: `Route not found: ${req.method} ${req.originalUrl}`,
+    code: 'NOT_FOUND'
+  });
+});
+
+// ====================
+// START SERVER
+// ====================
+server.listen(PORT, () => {
+  console.log(`
+  ╔═══════════════════════════════════════╗
+  ║  Echo Gateway - DEBUG v1.6           ║
+  ╠═══════════════════════════════════════╣
+  ║  Status:    UNCONDITIONAL LOGGING    ║
+  ║  HTTP:      http://localhost:${PORT}      ║
+  ║  Backend:   ${PYTHON_BACKEND}  ║
+  ║  WebSocket: ws://localhost:${PORT}/ws     ║
+  ║  Timeout:   10 seconds                ║
+  ║  Pooling:   Enabled                   ║
+  ╚═══════════════════════════════════════╝
+  
+  ✅ Public routes: /login, /register
+  ✅ School creation: /create-and-join (auth)
+  ✅ School join: /join (auth) - DEBUG
+  ✅ All other routes: /schools, /teachers, etc.
+  ✅ Health check: GET /health
+  ⚠️  JWT_SECRET: ${JWT_SECRET ? '✓ Set' : '✗ NOT SET'}
+  
+  🔍 DEBUG LOGGING ENABLED:
+  • All requests logged regardless of environment
+  • Request ID tracing for each request
+  • Headers and body size logged
+  • Axios call timing and status
+  • Full error stack traces
+  `);
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  console.log('🔄 SIGTERM received. Shutting down gracefully...');
+  wss.close();
+  server.close(() => {
+    console.log('✅ Server closed');
+    process.exit(0);
+  });
+});
