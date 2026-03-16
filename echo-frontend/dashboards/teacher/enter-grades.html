@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Enter Grades — Echo</title>
+<link rel="stylesheet" href="../../css/layout.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+.grade-input { width:70px; padding:.4rem .5rem; border:1.5px solid var(--gray-300); border-radius:6px; font-size:.82rem; text-align:center; font-family:inherit; outline:none; transition:border-color .2s; }
+.grade-input:focus { border-color:var(--echo-blue); }
+.grade-input.pass { border-color:var(--echo-green); background:rgba(16,185,129,.05); }
+.grade-input.fail { border-color:var(--echo-red); background:rgba(239,68,68,.05); }
+.score-grade { font-size:.72rem; font-weight:700; padding:2px 6px; border-radius:99px; min-width:28px; text-align:center; }
+</style>
+</head>
+<body>
+<div class="shell">
+<aside class="sidebar">
+  <div class="sidebar-brand"><div class="brand-mark">E</div><span class="brand-name">Echo</span></div>
+  <nav class="sidebar-nav">
+    <div class="nav-label">Teaching</div>
+    <a href="dashboard.html" class="nav-link"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="enter-grades.html" class="nav-link active"><i class="fas fa-graduation-cap"></i> Enter Grades</a>
+    <a href="attendance.html" class="nav-link"><i class="fas fa-calendar-check"></i> Mark Attendance</a>
+    <div class="nav-label">Classes</div>
+    <a href="classes.html" class="nav-link"><i class="fas fa-users"></i> My Classes</a>
+    <a href="assignments.html" class="nav-link"><i class="fas fa-tasks"></i> Assignments</a>
+    <a href="materials.html" class="nav-link"><i class="fas fa-folder"></i> Materials</a>
+    <div class="nav-label">Account</div>
+    <a href="notifications.html" class="nav-link"><i class="fas fa-bell"></i> Notifications</a>
+    <a href="profile.html" class="nav-link"><i class="fas fa-user"></i> Profile</a>
+    <a href="#" class="nav-link" data-logout><i class="fas fa-sign-out-alt"></i> Logout</a>
+  </nav>
+  <div class="sidebar-user"><div class="sidebar-user-inner"><div class="user-avatar-sm">TC</div><div class="user-info-sm"><p>Teacher</p><span>Class Teacher</span></div></div></div>
+</aside>
+<div class="sidebar-overlay"></div>
+
+<div class="main">
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="topbar-btn hamburger"><i class="fas fa-bars"></i></button>
+      <div><h1>Enter Grades</h1><p id="live-time"></p></div>
+    </div>
+    <div class="topbar-right">
+      <button class="topbar-btn"><i class="fas fa-bell"></i></button>
+      <div class="topbar-avatar">TC</div>
+    </div>
+  </header>
+
+  <div class="page-body">
+    <!-- Filters row -->
+    <div class="section-card" style="margin-bottom:1.25rem;">
+      <div class="section-body" style="display:flex;gap:1rem;flex-wrap:wrap;align-items:flex-end;">
+        <div class="field" style="margin:0;flex:1;min-width:160px;">
+          <label>Class</label>
+          <select id="classSelect" onchange="loadStudents()">
+            <option value="">Select class</option>
+            <option value="SS2A">SS2A — Mathematics</option>
+            <option value="SS2B">SS2B — Mathematics</option>
+            <option value="SS1A">SS1A — Physics</option>
+            <option value="SS3A">SS3A — Adv. Math</option>
+          </select>
+        </div>
+        <div class="field" style="margin:0;flex:1;min-width:140px;">
+          <label>Subject</label>
+          <select id="subjectSelect"><option>Mathematics</option><option>Physics</option><option>English Language</option><option>Biology</option></select>
+        </div>
+        <div class="field" style="margin:0;flex:1;min-width:120px;">
+          <label>Term</label>
+          <select><option>First Term</option><option>Second Term</option><option>Third Term</option></select>
+        </div>
+        <div class="field" style="margin:0;flex:1;min-width:120px;">
+          <label>Exam Type</label>
+          <select><option>CA 1</option><option>CA 2</option><option>Mid-term</option><option>End of Term</option></select>
+        </div>
+        <div class="field" style="margin:0;flex:1;min-width:100px;">
+          <label>Total Marks</label>
+          <input type="number" id="totalMarks" value="100" min="1" style="text-align:center;">
+        </div>
+      </div>
+    </div>
+
+    <!-- Grade Table -->
+    <div class="section-card">
+      <div class="section-head">
+        <h2 id="tableTitle">Select a class to begin</h2>
+        <div style="display:flex;gap:.5rem;">
+          <button class="btn btn-ghost btn-sm" onclick="fillAll()"><i class="fas fa-magic"></i> Auto-fill Sample Data</button>
+          <button class="btn btn-primary btn-sm" id="saveBtn" onclick="saveGrades()" style="display:none;"><i class="fas fa-save"></i> Save Grades</button>
+        </div>
+      </div>
+
+      <div id="gradeTableWrap">
+        <div class="empty-state"><i class="fas fa-graduation-cap"></i><p>Select a class above to load students</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="modal-backdrop" id="successModal">
+  <div class="modal" style="max-width:380px;">
+    <div class="modal-body" style="text-align:center;padding:2rem;">
+      <div style="font-size:3rem;margin-bottom:1rem;">✅</div>
+      <h3 style="margin-bottom:.5rem;">Grades Saved!</h3>
+      <p style="color:var(--gray-500);font-size:.85rem;margin-bottom:1.5rem;">Grades have been submitted and are pending admin review before publishing.</p>
+      <button class="btn btn-primary btn-full" onclick="closeModal('successModal')">Done</button>
+    </div>
+  </div>
+</div>
+
+<script src="../../js/utils.js"></script>
+<script>
+const students = {
+  'SS2A': [
+    {id:1,name:'Chiamaka Okeke'},{id:2,name:'Emeka Kalu'},{id:3,name:'Amina Bello'},
+    {id:4,name:'Tunde Adeyemi'},{id:5,name:'Ngozi Eze'},{id:6,name:'Bello Musa'},
+    {id:7,name:'Chisom Obi'},{id:8,name:'Fatima Sule'}
+  ],
+  'SS2B': [{id:9,name:'Aisha Umar'},{id:10,name:'Rotimi Babs'},{id:11,name:'Chinwe Nnadi'},{id:12,name:'Danladi Yusuf'}],
+  'SS1A': [{id:13,name:'Seun Okonkwo'},{id:14,name:'Halima Garba'},{id:15,name:'Kayode Femi'},{id:16,name:'Priscilla Udo'}],
+  'SS3A': [{id:17,name:'Tobi Adeleke'},{id:18,name:'Zainab Idris'},{id:19,name:'Chukwuemeka Obi'},{id:20,name:'Maryam Lawal'}]
+};
+
+function gradeLabel(score, total) {
+  const pct = (score / total) * 100;
+  if (pct >= 75) return {l:'A',c:'#10b981',bg:'rgba(16,185,129,.1)'};
+  if (pct >= 60) return {l:'B',c:'#3b82f6',bg:'rgba(59,130,246,.1)'};
+  if (pct >= 50) return {l:'C',c:'#f59e0b',bg:'rgba(245,158,11,.1)'};
+  if (pct >= 40) return {l:'D',c:'#ef4444',bg:'rgba(239,68,68,.1)'};
+  return {l:'F',c:'#991b1b',bg:'rgba(239,68,68,.15)'};
+}
+
+function loadStudents() {
+  const cls = document.getElementById('classSelect').value;
+  if (!cls) return;
+  const list = students[cls] || [];
+  document.getElementById('tableTitle').textContent = `${cls} — ${list.length} Students`;
+  document.getElementById('saveBtn').style.display = 'flex';
+  document.getElementById('gradeTableWrap').innerHTML = `
+    <div style="overflow-x:auto;">
+    <table class="echo-table">
+      <thead><tr><th>#</th><th>Student Name</th><th>Score</th><th>Grade</th><th>Remark</th></tr></thead>
+      <tbody id="studentRows">
+        ${list.map((s,i) => `
+        <tr id="row-${s.id}">
+          <td style="color:var(--gray-400);">${i+1}</td>
+          <td style="font-weight:600;">${s.name}</td>
+          <td><input class="grade-input" type="number" min="0" max="100" placeholder="—" oninput="updateGrade(this,${s.id})" data-id="${s.id}"></td>
+          <td><span class="score-grade" id="grade-${s.id}" style="background:var(--gray-100);color:var(--gray-400);">—</span></td>
+          <td><span id="remark-${s.id}" style="font-size:.75rem;color:var(--gray-400);">—</span></td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+    </div>`;
+}
+
+function updateGrade(input, id) {
+  const total = parseInt(document.getElementById('totalMarks').value) || 100;
+  const score = parseInt(input.value);
+  const gradeEl = document.getElementById(`grade-${id}`);
+  const remarkEl = document.getElementById(`remark-${id}`);
+  if (isNaN(score) || input.value === '') {
+    gradeEl.style.cssText = 'background:var(--gray-100);color:var(--gray-400);';
+    gradeEl.textContent = '—'; remarkEl.textContent = '—';
+    input.className = 'grade-input'; return;
+  }
+  const g = gradeLabel(score, total);
+  gradeEl.style.cssText = `background:${g.bg};color:${g.c};`;
+  gradeEl.textContent = g.l;
+  const remarks = {A:'Excellent',B:'Good',C:'Average',D:'Below Average',F:'Fail'};
+  remarkEl.textContent = remarks[g.l];
+  input.className = `grade-input ${g.l === 'F' ? 'fail' : 'pass'}`;
+}
+
+function fillAll() {
+  document.querySelectorAll('.grade-input').forEach(inp => {
+    inp.value = Math.floor(Math.random() * 41) + 55;
+    updateGrade(inp, inp.dataset.id);
+  });
+}
+
+function saveGrades() {
+  const filled = [...document.querySelectorAll('.grade-input')].filter(i => i.value !== '').length;
+  if (filled === 0) { toast('Please enter at least one grade.', 'error'); return; }
+  const btn = document.getElementById('saveBtn');
+  btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+  setTimeout(() => { btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Save Grades'; openModal('successModal'); }, 1000);
+}
+</script>
+</body></html>

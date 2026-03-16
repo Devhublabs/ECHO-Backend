@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Create your Echo student account and join your school.">
+    <title>Student Registration — Echo</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .form-wrap { max-width: 520px; margin: 0 auto; }
+        .form-section { background: white; border-radius: var(--radius-md); border: 1px solid var(--gray-300); padding: 1.75rem; margin-bottom: 1.25rem; }
+        .form-section h3 { font-size: 0.95rem; color: var(--echo-blue); font-weight: 700; margin-bottom: 1.25rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--gray-100); display: flex; align-items: center; gap: 0.5rem; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .form-group { margin-bottom: 1rem; }
+        .form-group:last-child { margin-bottom: 0; }
+        .form-group label { display: block; font-size: .82rem; font-weight: 600; color: var(--gray-700); margin-bottom: .35rem; }
+        .form-group input { width: 100%; padding: .7rem .9rem; border: 1.5px solid var(--gray-300); border-radius: var(--radius-sm); font-family: 'Inter', sans-serif; font-size: .88rem; color: var(--gray-900); outline: none; transition: border-color .2s, box-shadow .2s; }
+        .form-group input:focus { border-color: var(--echo-blue); box-shadow: 0 0 0 3px rgba(59,130,246,.1); }
+        .required::after { content: " *"; color: var(--echo-red); }
+        .hint { font-size: .73rem; color: var(--gray-500); margin-top: .25rem; }
+        .info-box { background: rgba(59,130,246,.06); border: 1px solid rgba(59,130,246,.2); border-radius: var(--radius-sm); padding: .85rem 1rem; font-size: .82rem; color: #1d4ed8; display: flex; gap: .6rem; align-items: flex-start; }
+        @media (max-width: 540px) { .form-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="../../home.html" class="logo">ECHO</a>
+            <a href="../../get-started.html" class="btn btn-ghost"><i class="fas fa-arrow-left"></i> Change Role</a>
+        </div>
+    </nav>
+
+    <section class="section">
+        <div class="container form-wrap">
+            <div class="text-center" style="margin-bottom: 1.75rem;">
+                <div class="role-badge"><i class="fas fa-user-graduate"></i> Student Registration</div>
+                <h2 style="margin-top: .75rem; font-size: 1.5rem;">Create your student account</h2>
+                <p style="color: var(--gray-500); font-size: .88rem; margin-top: .35rem;">Fill in your details below to get started on Echo.</p>
+            </div>
+
+            <form id="studentRegForm">
+                <div class="form-section">
+                    <h3><i class="fas fa-user"></i> Personal Information</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="required">First Name</label>
+                            <input type="text" placeholder="e.g. Chiamaka" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="required">Last Name</label>
+                            <input type="text" placeholder="e.g. Okeke" required>
+                        </div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="required">Email Address</label>
+                            <input type="email" placeholder="student@email.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Number <span style="font-weight:400;color:var(--gray-400);">(Optional)</span></label>
+                            <input type="tel" placeholder="08012345678">
+                        </div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="required">Password</label>
+                            <input type="password" id="password" placeholder="Minimum 8 characters" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="required">Confirm Password</label>
+                            <input type="password" id="confirmPassword" placeholder="Repeat password" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3><i class="fas fa-school"></i> School Details</h3>
+                    <div class="form-group">
+                        <label class="required">Registration Code</label>
+                        <input type="text" placeholder="e.g. STU-XXXX-XXX" required style="text-transform:uppercase;letter-spacing:1px;">
+                        <p class="hint">Get this code from your school administrator or teacher.</p>
+                    </div>
+                    <div class="info-box">
+                        <i class="fas fa-info-circle" style="margin-top:2px;flex-shrink:0;"></i>
+                        <span>Your class will be assigned by your school administrator after your account is approved. You don't need to select it yourself.</span>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width:100%;padding:.8rem;font-size:.95rem;" id="regBtn">
+                    <i class="fas fa-user-plus"></i> Create Account
+                </button>
+                <p style="text-align:center;margin-top:1rem;font-size:.85rem;color:var(--gray-500);">
+                    Already have an account? <a href="../../login.html">Sign in here</a>
+                </p>
+            </form>
+        </div>
+    </section>
+
+    <script>
+    document.getElementById('studentRegForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const pw  = document.getElementById('password').value;
+        const cpw = document.getElementById('confirmPassword').value;
+        if (pw !== cpw)    { alert('Passwords do not match.'); return; }
+        if (pw.length < 8) { alert('Password must be at least 8 characters.'); return; }
+        const btn = document.getElementById('regBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating account...';
+        setTimeout(() => { window.location.href = '../../dashboards/student/dashboard.html'; }, 900);
+    });
+    </script>
+</body>
+</html>

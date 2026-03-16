@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Materials — Echo</title>
+<link rel="stylesheet" href="../../css/layout.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+.material-card { border:1px solid var(--gray-200); border-radius:var(--radius); padding:1rem; display:flex; align-items:center; gap:.85rem; transition:box-shadow .2s; }
+.material-card:hover { box-shadow:var(--shadow-md); }
+.material-icon { width:42px; height:42px; border-radius:9px; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:1.1rem; }
+.upload-zone { border:2px dashed var(--gray-300); border-radius:var(--radius-lg); padding:2.5rem; text-align:center; cursor:pointer; transition:all .2s; }
+.upload-zone:hover { border-color:var(--echo-blue); background:rgba(59,130,246,.02); }
+</style>
+</head>
+<body>
+<div class="shell">
+<aside class="sidebar">
+  <div class="sidebar-brand"><div class="brand-mark">E</div><span class="brand-name">Echo</span></div>
+  <nav class="sidebar-nav">
+    <div class="nav-label">Teaching</div>
+    <a href="dashboard.html" class="nav-link"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="enter-grades.html" class="nav-link"><i class="fas fa-graduation-cap"></i> Enter Grades</a>
+    <a href="grades.html" class="nav-link"><i class="fas fa-chart-bar"></i> View Grades</a>
+    <a href="attendance.html" class="nav-link"><i class="fas fa-calendar-check"></i> Mark Attendance</a>
+    <div class="nav-label">Classes</div>
+    <a href="classes.html" class="nav-link"><i class="fas fa-users"></i> My Classes</a>
+    <a href="assignments.html" class="nav-link"><i class="fas fa-tasks"></i> Assignments</a>
+    <a href="materials.html" class="nav-link active"><i class="fas fa-folder"></i> Materials</a>
+    <div class="nav-label">Account</div>
+    <a href="profile.html" class="nav-link"><i class="fas fa-user"></i> Profile</a>
+    <a href="#" class="nav-link" data-logout><i class="fas fa-sign-out-alt"></i> Logout</a>
+  </nav>
+  <div class="sidebar-user"><div class="sidebar-user-inner"><div class="user-avatar-sm">TC</div><div class="user-info-sm"><p>Teacher</p><span>Class Teacher</span></div></div></div>
+</aside>
+<div class="sidebar-overlay"></div>
+<div class="main">
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="topbar-btn hamburger"><i class="fas fa-bars"></i></button>
+      <div><h1>Materials</h1><p id="live-time"></p></div>
+    </div>
+    <div class="topbar-right">
+      <button class="topbar-btn"><i class="fas fa-bell"></i></button>
+      <div class="topbar-avatar">TC</div>
+      <button class="btn btn-primary btn-sm" onclick="openModal('uploadModal')"><i class="fas fa-upload"></i> Upload</button>
+    </div>
+  </header>
+
+  <div class="page-body">
+    <!-- Upload zone -->
+    <div class="upload-zone" style="margin-bottom:1.5rem;" onclick="openModal('uploadModal')">
+      <i class="fas fa-cloud-upload-alt" style="font-size:2rem;color:var(--gray-300);margin-bottom:.75rem;display:block;"></i>
+      <p style="font-weight:600;color:var(--gray-700);margin-bottom:.25rem;">Drop files here or click to upload</p>
+      <p style="font-size:.78rem;color:var(--gray-400);">PDF, DOC, DOCX, PPT, Images — Max 10MB</p>
+    </div>
+
+    <!-- Filter + search -->
+    <div style="display:flex;gap:.65rem;margin-bottom:1rem;flex-wrap:wrap;align-items:center;">
+      <div style="display:flex;gap:.4rem;">
+        <button class="btn btn-primary btn-sm" onclick="filterMat(this,'all')">All</button>
+        <button class="btn btn-ghost btn-sm" onclick="filterMat(this,'pdf')">PDF</button>
+        <button class="btn btn-ghost btn-sm" onclick="filterMat(this,'doc')">Documents</button>
+        <button class="btn btn-ghost btn-sm" onclick="filterMat(this,'img')">Images</button>
+      </div>
+      <select style="margin-left:auto;padding:.4rem .75rem;border:1.5px solid var(--gray-200);border-radius:8px;font-size:.8rem;outline:none;">
+        <option>All Classes</option><option>SS2A</option><option>SS2B</option><option>SS1A</option><option>SS3A</option>
+      </select>
+    </div>
+
+    <div class="section-card">
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.85rem;padding:1.25rem;" id="matGrid">
+        <div class="material-card mat-item" data-type="pdf">
+          <div class="material-icon" style="background:rgba(239,68,68,.1);"><i class="fas fa-file-pdf" style="color:var(--echo-red);"></i></div>
+          <div style="flex:1;min-width:0;"><p style="font-weight:600;font-size:.85rem;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Algebra Notes — Chapter 5.pdf</p><p style="font-size:.72rem;color:var(--gray-400);margin:.15rem 0 0;">SS2A • 2.4 MB • Mar 10</p></div>
+          <button class="btn btn-ghost btn-sm" onclick="toast('Downloading...','default')"><i class="fas fa-download"></i></button>
+        </div>
+        <div class="material-card mat-item" data-type="doc">
+          <div class="material-icon" style="background:rgba(59,130,246,.1);"><i class="fas fa-file-word" style="color:var(--echo-blue);"></i></div>
+          <div style="flex:1;min-width:0;"><p style="font-weight:600;font-size:.85rem;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Physics Lab Manual.docx</p><p style="font-size:.72rem;color:var(--gray-400);margin:.15rem 0 0;">SS1A • 1.1 MB • Mar 8</p></div>
+          <button class="btn btn-ghost btn-sm" onclick="toast('Downloading...','default')"><i class="fas fa-download"></i></button>
+        </div>
+        <div class="material-card mat-item" data-type="pdf">
+          <div class="material-icon" style="background:rgba(239,68,68,.1);"><i class="fas fa-file-pdf" style="color:var(--echo-red);"></i></div>
+          <div style="flex:1;min-width:0;"><p style="font-weight:600;font-size:.85rem;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Trigonometry Formula Sheet.pdf</p><p style="font-size:.72rem;color:var(--gray-400);margin:.15rem 0 0;">SS3A • 0.5 MB • Mar 5</p></div>
+          <button class="btn btn-ghost btn-sm" onclick="toast('Downloading...','default')"><i class="fas fa-download"></i></button>
+        </div>
+        <div class="material-card mat-item" data-type="img">
+          <div class="material-icon" style="background:rgba(16,185,129,.1);"><i class="fas fa-file-image" style="color:var(--echo-green);"></i></div>
+          <div style="flex:1;min-width:0;"><p style="font-weight:600;font-size:.85rem;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Periodic Table Chart.png</p><p style="font-size:.72rem;color:var(--gray-400);margin:.15rem 0 0;">SS1A • 0.8 MB • Feb 28</p></div>
+          <button class="btn btn-ghost btn-sm" onclick="toast('Downloading...','default')"><i class="fas fa-download"></i></button>
+        </div>
+        <div class="material-card mat-item" data-type="doc">
+          <div class="material-icon" style="background:rgba(245,158,11,.1);"><i class="fas fa-file-powerpoint" style="color:var(--echo-orange);"></i></div>
+          <div style="flex:1;min-width:0;"><p style="font-weight:600;font-size:.85rem;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Introduction to Calculus.pptx</p><p style="font-size:.72rem;color:var(--gray-400);margin:.15rem 0 0;">SS3A • 3.2 MB • Feb 20</p></div>
+          <button class="btn btn-ghost btn-sm" onclick="toast('Downloading...','default')"><i class="fas fa-download"></i></button>
+        </div>
+        <div class="material-card mat-item" data-type="pdf">
+          <div class="material-icon" style="background:rgba(239,68,68,.1);"><i class="fas fa-file-pdf" style="color:var(--echo-red);"></i></div>
+          <div style="flex:1;min-width:0;"><p style="font-weight:600;font-size:.85rem;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Past Questions — WAEC Math.pdf</p><p style="font-size:.72rem;color:var(--gray-400);margin:.15rem 0 0;">All Classes • 4.1 MB • Feb 15</p></div>
+          <button class="btn btn-ghost btn-sm" onclick="toast('Downloading...','default')"><i class="fas fa-download"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- Upload Modal -->
+<div class="modal-backdrop" id="uploadModal">
+  <div class="modal">
+    <div class="modal-head"><h3><i class="fas fa-upload"></i> Upload Material</h3><button class="modal-close" onclick="closeModal('uploadModal')"><i class="fas fa-times"></i></button></div>
+    <div class="modal-body">
+      <form id="uploadForm">
+        <div class="field"><label>File Title</label><input type="text" placeholder="e.g. Algebra Notes Chapter 5" required></div>
+        <div class="form-row">
+          <div class="field"><label>Class</label><select required><option value="">Select class</option><option>SS2A</option><option>SS2B</option><option>SS1A</option><option>SS3A</option><option>All Classes</option></select></div>
+          <div class="field"><label>Subject</label><select><option>Mathematics</option><option>Physics</option><option>Advanced Math</option></select></div>
+        </div>
+        <div class="field"><label>File</label>
+          <div style="border:2px dashed var(--gray-300);border-radius:8px;padding:1.5rem;text-align:center;cursor:pointer;" onclick="document.getElementById('fileInput').click()">
+            <i class="fas fa-cloud-upload-alt" style="font-size:1.5rem;color:var(--gray-300);display:block;margin-bottom:.5rem;"></i>
+            <p style="font-size:.82rem;color:var(--gray-500);" id="fileLabel">Click to select file</p>
+          </div>
+          <input type="file" id="fileInput" style="display:none;" onchange="document.getElementById('fileLabel').textContent=this.files[0]?.name||'Click to select file'">
+        </div>
+      </form>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('uploadModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="uploadFile()"><i class="fas fa-upload"></i> Upload</button>
+    </div>
+  </div>
+</div>
+
+<script src="../../js/utils.js"></script>
+<script>
+function filterMat(btn, type) {
+  document.querySelectorAll('[onclick*="filterMat"]').forEach(b => b.className = 'btn btn-ghost btn-sm');
+  btn.className = 'btn btn-primary btn-sm';
+  document.querySelectorAll('.mat-item').forEach(item => {
+    item.style.display = (type === 'all' || item.dataset.type === type) ? 'flex' : 'none';
+  });
+}
+function uploadFile() {
+  const form = document.getElementById('uploadForm');
+  if (!form.checkValidity()) { form.reportValidity(); return; }
+  const btn = document.querySelector('#uploadModal .btn-primary');
+  btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+  setTimeout(() => { closeModal('uploadModal'); toast('Material uploaded successfully!', 'success'); form.reset(); document.getElementById('fileLabel').textContent = 'Click to select file'; btn.disabled = false; btn.innerHTML = '<i class="fas fa-upload"></i> Upload'; }, 1200);
+}
+</script>
+</body></html>

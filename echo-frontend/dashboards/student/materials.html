@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Materials — Echo</title>
+<link rel="stylesheet" href="../../css/layout.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+.material-card { border:1px solid var(--gray-200); border-radius:var(--radius); padding:1rem; display:flex; align-items:center; gap:.85rem; transition:box-shadow .2s; }
+.material-card:hover { box-shadow:var(--shadow-md); }
+.material-icon { width:42px; height:42px; border-radius:9px; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:1.1rem; }
+</style>
+</head>
+<body>
+<div class="shell">
+<aside class="sidebar">
+  <div class="sidebar-brand"><div class="brand-mark">E</div><span class="brand-name">Echo</span></div>
+  <nav class="sidebar-nav">
+    <div class="nav-label">My Learning</div>
+    <a href="dashboard.html" class="nav-link"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="grades.html" class="nav-link"><i class="fas fa-chart-bar"></i> My Grades</a>
+    <a href="assignments.html" class="nav-link"><i class="fas fa-tasks"></i> Assignments</a>
+    <a href="attendance.html" class="nav-link"><i class="fas fa-calendar-check"></i> Attendance</a>
+    <div class="nav-label">School</div>
+    <a href="notifications.html" class="nav-link"><i class="fas fa-bell"></i> Notifications</a>
+    <a href="materials.html" class="nav-link active"><i class="fas fa-book"></i> Materials</a>
+    <div class="nav-label">Account</div>
+    <a href="profile.html" class="nav-link"><i class="fas fa-user"></i> Profile</a>
+    <a href="#" class="nav-link" data-logout><i class="fas fa-sign-out-alt"></i> Logout</a>
+  </nav>
+  <div class="sidebar-user"><div class="sidebar-user-inner"><div class="user-avatar-sm">ST</div><div class="user-info-sm"><p>Student</p><span>SS2A</span></div></div></div>
+</aside>
+<div class="sidebar-overlay"></div>
+<div class="main">
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="topbar-btn hamburger"><i class="fas fa-bars"></i></button>
+      <div><h1>Study Materials</h1><p id="live-time"></p></div>
+    </div>
+    <div class="topbar-right">
+      <button class="topbar-btn"><i class="fas fa-bell"></i><span class="notif-dot"></span></button>
+      <div class="topbar-avatar">ST</div>
+    </div>
+  </header>
+
+  <div class="page-body">
+    <!-- Filter -->
+    <div style="display:flex;gap:.65rem;margin-bottom:1rem;flex-wrap:wrap;align-items:center;">
+      <div style="display:flex;gap:.4rem;">
+        <button class="btn btn-primary btn-sm" onclick="filterMat(this,'all')">All</button>
+        <button class="btn btn-ghost btn-sm" onclick="filterMat(this,'pdf')">PDF</button>
+        <button class="btn btn-ghost btn-sm" onclick="filterMat(this,'doc')">Documents</button>
+        <button class="btn btn-ghost btn-sm" onclick="filterMat(this,'img')">Images</button>
+      </div>
+      <select style="margin-left:auto;padding:.4rem .75rem;border:1.5px solid var(--gray-200);border-radius:8px;font-size:.8rem;outline:none;">
+        <option>All Subjects</option><option>Mathematics</option><option>English Language</option><option>Physics</option><option>Biology</option><option>Chemistry</option>
+      </select>
+    </div>
+
+    <div class="section-card">
+      <div class="section-head"><h2>Uploaded by Your Teachers</h2><span style="font-size:.78rem;color:var(--gray-500);">6 files</span></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.85rem;padding:1.25rem;" id="matGrid">
+        <div class="material-card mat-item" data-type="pdf">
+          <div class="material-icon" style="background:rgba(239,68,68,.1);"><i class="fas fa-file-pdf" style="color:var(--echo-red);"></i></div>
+          <div style="flex:1;min-width:0;"><p style="font-weight:600;font-size:.85rem;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Algebra Notes — Chapter 5.pdf</p><p style="font-size:.72rem;color:var(--gray-400);margin:.15rem 0 0;">Mathematics • Mr. Adebayo • Mar 10</p></div>
+          <button class="btn btn-primary btn-sm" onclick="toast('Downloading...','default')"><i class="fas fa-download"></i></button>
+        </div>
+        <div class="material-card mat-item" data-type="pdf">
+          <div class="material-icon" style="background:rgba(239,68,68,.1);"><i class="fas fa-file-pdf" style="color:var(--echo-red);"></i></div>
+          <div style="flex:1;min-width:0;"><p style="font-weight:600;font-size:.85rem;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Trigonometry Formula Sheet.pdf</p><p style="font-size:.72rem;color:var(--gray-400);margin:.15rem 0 0;">Mathematics • Mr. Adebayo • Mar 5</p></div>
+          <button class="btn btn-primary btn-sm" onclick="toast('Downloading...','default')"><i class="fas fa-download"></i></button>
+        </div>
+        <div class="material-card mat-item" data-type="doc">
+          <div class="material-icon" style="background:rgba(59,130,246,.1);"><i class="fas fa-file-word" style="color:var(--echo-blue);"></i></div>
+          <div style="flex:1;min-width:0;"><p style="font-weight:600;font-size:.85rem;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Essay Writing Guide.docx</p><p style="font-size:.72rem;color:var(--gray-400);margin:.15rem 0 0;">English Language • Mrs. Okafor • Mar 3</p></div>
+          <button class="btn btn-primary btn-sm" onclick="toast('Downloading...','default')"><i class="fas fa-download"></i></button>
+        </div>
+        <div class="material-card mat-item" data-type="img">
+          <div class="material-icon" style="background:rgba(16,185,129,.1);"><i class="fas fa-file-image" style="color:var(--echo-green);"></i></div>
+          <div style="flex:1;min-width:0;"><p style="font-weight:600;font-size:.85rem;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Cell Structure Diagram.png</p><p style="font-size:.72rem;color:var(--gray-400);margin:.15rem 0 0;">Biology • Mrs. Adaeze • Feb 28</p></div>
+          <button class="btn btn-primary btn-sm" onclick="toast('Downloading...','default')"><i class="fas fa-download"></i></button>
+        </div>
+        <div class="material-card mat-item" data-type="pdf">
+          <div class="material-icon" style="background:rgba(239,68,68,.1);"><i class="fas fa-file-pdf" style="color:var(--echo-red);"></i></div>
+          <div style="flex:1;min-width:0;"><p style="font-weight:600;font-size:.85rem;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">WAEC Past Questions — Math.pdf</p><p style="font-size:.72rem;color:var(--gray-400);margin:.15rem 0 0;">Mathematics • Mr. Adebayo • Feb 20</p></div>
+          <button class="btn btn-primary btn-sm" onclick="toast('Downloading...','default')"><i class="fas fa-download"></i></button>
+        </div>
+        <div class="material-card mat-item" data-type="doc">
+          <div class="material-icon" style="background:rgba(245,158,11,.1);"><i class="fas fa-file-powerpoint" style="color:var(--echo-orange);"></i></div>
+          <div style="flex:1;min-width:0;"><p style="font-weight:600;font-size:.85rem;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Laws of Motion — Slides.pptx</p><p style="font-size:.72rem;color:var(--gray-400);margin:.15rem 0 0;">Physics • Mr. Chinedu • Feb 15</p></div>
+          <button class="btn btn-primary btn-sm" onclick="toast('Downloading...','default')"><i class="fas fa-download"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<script src="../../js/utils.js"></script>
+<script>
+function filterMat(btn, type) {
+  document.querySelectorAll('[onclick*="filterMat"]').forEach(b => b.className = 'btn btn-ghost btn-sm');
+  btn.className = 'btn btn-primary btn-sm';
+  document.querySelectorAll('.mat-item').forEach(item => {
+    item.style.display = (type === 'all' || item.dataset.type === type) ? 'flex' : 'none';
+  });
+}
+</script>
+</body></html>

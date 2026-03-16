@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard — Echo</title>
+<link rel="stylesheet" href="../../css/layout.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<div class="shell">
+<aside class="sidebar">
+  <div class="sidebar-brand"><div class="brand-mark">E</div><span class="brand-name">Echo</span></div>
+  <nav class="sidebar-nav">
+    <div class="nav-label">Main</div>
+    <a href="dashboard.html" class="nav-link active"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="registrations.html" class="nav-link"><i class="fas fa-user-check"></i> Approve Registrations</a>
+    <div class="nav-label">People</div>
+    <a href="students.html" class="nav-link"><i class="fas fa-user-graduate"></i> Students</a>
+    <a href="teachers.html" class="nav-link"><i class="fas fa-chalkboard-teacher"></i> Teachers</a>
+    <div class="nav-label">Manage</div>
+    <a href="#" class="nav-link" onclick="openModal('addTeacherModal');return false;"><i class="fas fa-chalkboard-teacher"></i> Add Teacher</a>
+    <a href="#" class="nav-link" onclick="openModal('addClassModal');return false;"><i class="fas fa-layer-group"></i> Create Class</a>
+    <a href="#" class="nav-link" onclick="openModal('addSubjectModal');return false;"><i class="fas fa-book"></i> Create Subject</a>
+    <div class="nav-label">Account</div>
+    <a href="notifications.html" class="nav-link"><i class="fas fa-bell"></i> Notifications</a>
+    <a href="subscription.html" class="nav-link"><i class="fas fa-credit-card"></i> Subscription</a>
+    <a href="profile.html" class="nav-link"><i class="fas fa-user"></i> Profile</a>
+    <a href="#" class="nav-link" data-logout><i class="fas fa-sign-out-alt"></i> Logout</a>
+  </nav>
+  <div class="sidebar-user">
+    <div class="sidebar-user-inner">
+      <div class="user-avatar-sm" id="sidebarInitials">AD</div>
+      <div class="user-info-sm"><p id="sidebarName">Admin</p><span>School Administrator</span></div>
+    </div>
+  </div>
+</aside>
+<div class="sidebar-overlay"></div>
+
+<div class="main">
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="topbar-btn hamburger"><i class="fas fa-bars"></i></button>
+      <div>
+        <h1>Admin Dashboard</h1>
+        <p id="live-time"></p>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <button class="topbar-btn"><i class="fas fa-bell"></i><span class="notif-dot"></span></button>
+      <div class="topbar-avatar" id="topbarInitials">AD</div>
+    </div>
+  </header>
+
+  <div class="page-body">
+
+    <!-- Onboarding Checklist (shown until dismissed) -->
+    <div id="onboardingCard" class="section-card" style="margin-bottom:1.25rem;border-color:var(--echo-blue);background:rgba(59,130,246,.02);">
+      <div class="section-head" style="border-bottom-color:rgba(59,130,246,.15);">
+        <div>
+          <h2 style="color:var(--echo-blue);">&#127881; Welcome to Echo! Let's set up your school</h2>
+          <p style="font-size:.78rem;color:var(--gray-500);margin-top:.2rem;">Complete these steps to get your school fully ready. <span id="checkProgress" style="font-weight:600;color:var(--echo-blue);">0 of 4 done</span></p>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="dismissOnboarding()" title="Dismiss">&#10005; Dismiss</button>
+      </div>
+      <div class="section-body" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.75rem;">
+
+        <div class="onboard-step" id="step1" onclick="completeStep(1)" style="display:flex;align-items:flex-start;gap:.75rem;padding:.9rem;border-radius:var(--radius);border:1.5px solid var(--gray-200);cursor:pointer;transition:all .15s;">
+          <div class="step-check" style="width:22px;height:22px;border-radius:50%;border:2px solid var(--gray-300);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;font-size:.7rem;transition:all .2s;"></div>
+          <div><p style="font-weight:700;font-size:.85rem;margin:0 0 .2rem;">Create your classes</p><p style="font-size:.75rem;color:var(--gray-500);margin:0;">Add all the classes in your school.</p></div>
+        </div>
+
+        <div class="onboard-step" id="step2" onclick="completeStep(2)" style="display:flex;align-items:flex-start;gap:.75rem;padding:.9rem;border-radius:var(--radius);border:1.5px solid var(--gray-200);cursor:pointer;transition:all .15s;">
+          <div class="step-check" style="width:22px;height:22px;border-radius:50%;border:2px solid var(--gray-300);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;font-size:.7rem;transition:all .2s;"></div>
+          <div><p style="font-weight:700;font-size:.85rem;margin:0 0 .2rem;">Add your subjects</p><p style="font-size:.75rem;color:var(--gray-500);margin:0;">Create subjects taught in your school.</p></div>
+        </div>
+
+        <div class="onboard-step" id="step3" onclick="completeStep(3)" style="display:flex;align-items:flex-start;gap:.75rem;padding:.9rem;border-radius:var(--radius);border:1.5px solid var(--gray-200);cursor:pointer;transition:all .15s;">
+          <div class="step-check" style="width:22px;height:22px;border-radius:50%;border:2px solid var(--gray-300);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;font-size:.7rem;transition:all .2s;"></div>
+          <div><p style="font-weight:700;font-size:.85rem;margin:0 0 .2rem;">Share teacher codes</p><p style="font-size:.75rem;color:var(--gray-500);margin:0;">Send registration codes to your teachers.</p></div>
+        </div>
+
+        <div class="onboard-step" id="step4" onclick="completeStep(4)" style="display:flex;align-items:flex-start;gap:.75rem;padding:.9rem;border-radius:var(--radius);border:1.5px solid var(--gray-200);cursor:pointer;transition:all .15s;">
+          <div class="step-check" style="width:22px;height:22px;border-radius:50%;border:2px solid var(--gray-300);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;font-size:.7rem;transition:all .2s;"></div>
+          <div><p style="font-weight:700;font-size:.85rem;margin:0 0 .2rem;">Share student codes</p><p style="font-size:.75rem;color:var(--gray-500);margin:0;">Send registration codes to your students.</p></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-top"><div class="stat-icon blue"><i class="fas fa-user-graduate"></i></div><span class="stat-badge up">↑ 12 new</span></div>
+        <div class="stat-val">286</div><div class="stat-lbl">Total Students</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-top"><div class="stat-icon green"><i class="fas fa-chalkboard-teacher"></i></div><span class="stat-badge neu">3 pending</span></div>
+        <div class="stat-val">24</div><div class="stat-lbl">Teaching Staff</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-top"><div class="stat-icon orange"><i class="fas fa-layer-group"></i></div><span class="stat-badge neu">Active</span></div>
+        <div class="stat-val">12</div><div class="stat-lbl">Classes</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-top"><div class="stat-icon purple"><i class="fas fa-file-alt"></i></div><span class="stat-badge up">This term</span></div>
+        <div class="stat-val">1,250</div><div class="stat-lbl">Exams Recorded</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:1.25rem;">
+      <!-- Recent Activity -->
+      <div class="section-card">
+        <div class="section-head"><h2>Recent Activity</h2><a href="notifications.html">View All</a></div>
+        <table class="echo-table">
+          <thead><tr><th>User</th><th>Action</th><th>Time</th></tr></thead>
+          <tbody>
+            <tr><td><div style="display:flex;align-items:center;gap:.5rem;"><div class="avatar" style="background:var(--echo-blue);color:#fff;">A</div> Mr. Adebayo</div></td><td>Uploaded Mathematics grades — SS2A</td><td style="color:var(--gray-400);">2h ago</td></tr>
+            <tr><td><div style="display:flex;align-items:center;gap:.5rem;"><div class="avatar" style="background:var(--echo-green);color:#fff;">C</div> Chiamaka O.</div></td><td>Registered for new term</td><td style="color:var(--gray-400);">5h ago</td></tr>
+            <tr><td><div style="display:flex;align-items:center;gap:.5rem;"><div class="avatar" style="background:var(--echo-orange);color:#fff;">I</div> Mr. Ibrahim</div></td><td>Registration pending approval</td><td style="color:var(--gray-400);">1d ago</td></tr>
+            <tr><td><div style="display:flex;align-items:center;gap:.5rem;"><div class="avatar" style="background:var(--echo-purple);color:#fff;">E</div> Emeka K.</div></td><td>New student registered — JSS2</td><td style="color:var(--gray-400);">2d ago</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Right column -->
+      <div>
+        <!-- Pending Approvals -->
+        <div class="section-card" style="margin-bottom:1.25rem;">
+          <div class="section-head"><h2>Pending Approvals</h2><a href="registrations.html">See all</a></div>
+          <div class="section-body" style="padding:.75rem;">
+            <div style="padding:.85rem;background:var(--gray-50);border-radius:8px;margin-bottom:.65rem;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.35rem;">
+                <span style="font-weight:600;font-size:.82rem;">Mathematics — SS2A</span>
+                <span class="badge badge-orange">Pending</span>
+              </div>
+              <p style="font-size:.75rem;color:var(--gray-500);margin-bottom:.65rem;">Mr. Adebayo • 45 students • Avg: 84.2%</p>
+              <div style="display:flex;gap:.4rem;">
+                <button class="btn btn-primary btn-sm btn-full" onclick="toast('Grades published!','success')">Publish</button>
+                <button class="btn btn-ghost btn-sm btn-full">Review</button>
+              </div>
+            </div>
+            <div style="padding:.85rem;background:var(--gray-50);border-radius:8px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.35rem;">
+                <span style="font-weight:600;font-size:.82rem;">Physics — SS1B</span>
+                <span class="badge badge-orange">Pending</span>
+              </div>
+              <p style="font-size:.75rem;color:var(--gray-500);margin-bottom:.65rem;">Dr. Chinedu • 38 students • Avg: 65.7%</p>
+              <div style="display:flex;gap:.4rem;">
+                <button class="btn btn-primary btn-sm btn-full" onclick="toast('Grades published!','success')">Publish</button>
+                <button class="btn btn-ghost btn-sm btn-full">Review</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Registration usage -->
+        <div class="section-card">
+          <div class="section-head"><h2>Registration Codes</h2></div>
+          <div class="section-body">
+            <div style="margin-bottom:1rem;">
+              <div style="display:flex;justify-content:space-between;margin-bottom:.35rem;font-size:.78rem;">
+                <span style="color:var(--gray-500);">Student codes used</span><strong>85%</strong>
+              </div>
+              <div class="prog-bar"><div class="prog-fill" style="width:85%;background:var(--echo-blue);"></div></div>
+              <p style="font-size:.72rem;color:var(--gray-400);margin-top:.25rem;">286 of 336 capacity</p>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:.35rem;font-size:.78rem;">
+                <span style="color:var(--gray-500);">Teacher codes used</span><strong>92%</strong>
+              </div>
+              <div class="prog-bar"><div class="prog-fill" style="width:92%;background:var(--echo-green);"></div></div>
+              <p style="font-size:.72rem;color:var(--gray-400);margin-top:.25rem;">24 of 26 capacity</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Onboarding Checklist (shown only until all steps complete) -->
+    <div class="section-card" id="onboardCard" style="margin-bottom:1.25rem;border:2px solid rgba(59,130,246,.2);background:linear-gradient(135deg,rgba(59,130,246,.03),rgba(139,92,246,.03));">
+      <div class="section-head" style="background:none;">
+        <div>
+          <h2 style="display:flex;align-items:center;gap:.5rem;">🎉 Welcome to Echo! <span style="font-size:.72rem;font-weight:600;background:rgba(59,130,246,.1);color:var(--echo-blue);padding:2px 8px;border-radius:99px;margin-left:.25rem;" id="checkProgress">0 / 5</span></h2>
+          <p style="font-size:.75rem;color:var(--gray-500);margin-top:.2rem;">Complete these steps to finish setting up your school.</p>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="dismissOnboarding()">Dismiss</button>
+      </div>
+      <div class="section-body" style="padding-top:.5rem;">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:.75rem;">
+
+          <div class="check-step" id="step1" onclick="completeStep('step1')" style="display:flex;align-items:center;gap:.85rem;padding:.85rem 1rem;border-radius:8px;border:1.5px solid var(--gray-200);cursor:pointer;transition:all .15s;background:#fff;">
+            <div class="step-check" style="width:24px;height:24px;border-radius:50%;border:2px solid var(--gray-300);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.7rem;"></div>
+            <div><div style="font-weight:600;font-size:.83rem;">Create your classes</div><div style="font-size:.72rem;color:var(--gray-500);">Add JSS, SS classes for your school</div></div>
+          </div>
+
+          <div class="check-step" id="step2" onclick="completeStep('step2')" style="display:flex;align-items:center;gap:.85rem;padding:.85rem 1rem;border-radius:8px;border:1.5px solid var(--gray-200);cursor:pointer;transition:all .15s;background:#fff;">
+            <div class="step-check" style="width:24px;height:24px;border-radius:50%;border:2px solid var(--gray-300);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.7rem;"></div>
+            <div><div style="font-weight:600;font-size:.83rem;">Add your subjects</div><div style="font-size:.72rem;color:var(--gray-500);">Create Maths, English, and others</div></div>
+          </div>
+
+          <div class="check-step" id="step3" onclick="completeStep('step3')" style="display:flex;align-items:center;gap:.85rem;padding:.85rem 1rem;border-radius:8px;border:1.5px solid var(--gray-200);cursor:pointer;transition:all .15s;background:#fff;">
+            <div class="step-check" style="width:24px;height:24px;border-radius:50%;border:2px solid var(--gray-300);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.7rem;"></div>
+            <div><div style="font-weight:600;font-size:.83rem;">Add your first teacher</div><div style="font-size:.72rem;color:var(--gray-500);">Send a registration code to staff</div></div>
+          </div>
+
+          <div class="check-step" id="step4" onclick="completeStep('step4')" style="display:flex;align-items:center;gap:.85rem;padding:.85rem 1rem;border-radius:8px;border:1.5px solid var(--gray-200);cursor:pointer;transition:all .15s;background:#fff;">
+            <div class="step-check" style="width:24px;height:24px;border-radius:50%;border:2px solid var(--gray-300);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.7rem;"></div>
+            <div><div style="font-weight:600;font-size:.83rem;">Enrol your first student</div><div style="font-size:.72rem;color:var(--gray-500);">Share student registration codes</div></div>
+          </div>
+
+          <div class="check-step" id="step5" onclick="completeStep('step5')" style="display:flex;align-items:center;gap:.85rem;padding:.85rem 1rem;border-radius:8px;border:1.5px solid var(--gray-200);cursor:pointer;transition:all .15s;background:#fff;">
+            <div class="step-check" style="width:24px;height:24px;border-radius:50%;border:2px solid var(--gray-300);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.7rem;"></div>
+            <div><div style="font-weight:600;font-size:.83rem;">Choose a subscription plan</div><div style="font-size:.72rem;color:var(--gray-500);">Pick the right plan for your school</div></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="section-card" style="margin-top:1.25rem;">
+      <div class="section-head"><h2>Quick Actions</h2></div>
+      <div class="section-body" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;">
+        <button class="btn btn-ghost btn-full" style="flex-direction:column;padding:1.25rem;gap:.5rem;height:auto;" onclick="openModal('addTeacherModal')">
+          <i class="fas fa-user-plus" style="font-size:1.4rem;color:var(--echo-blue);"></i>
+          <span>Add Teacher</span>
+        </button>
+        <button class="btn btn-ghost btn-full" style="flex-direction:column;padding:1.25rem;gap:.5rem;height:auto;" onclick="openModal('addClassModal')">
+          <i class="fas fa-layer-group" style="font-size:1.4rem;color:var(--echo-green);"></i>
+          <span>Create Class</span>
+        </button>
+        <button class="btn btn-ghost btn-full" style="flex-direction:column;padding:1.25rem;gap:.5rem;height:auto;" onclick="openModal('addSubjectModal')">
+          <i class="fas fa-book" style="font-size:1.4rem;color:var(--echo-orange);"></i>
+          <span>Create Subject</span>
+        </button>
+        <a href="registrations.html" class="btn btn-ghost btn-full" style="flex-direction:column;padding:1.25rem;gap:.5rem;height:auto;">
+          <i class="fas fa-user-check" style="font-size:1.4rem;color:var(--echo-purple);"></i>
+          <span>Approve Registrations</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- Add Teacher Modal -->
+<div class="modal-backdrop" id="addTeacherModal">
+  <div class="modal">
+    <div class="modal-head"><h3><i class="fas fa-chalkboard-teacher"></i> Add Teacher</h3><button class="modal-close" onclick="closeModal('addTeacherModal')"><i class="fas fa-times"></i></button></div>
+    <div class="modal-body">
+      <form id="addTeacherForm">
+        <div class="form-row"><div class="field"><label>First Name</label><input type="text" placeholder="e.g. Adebayo" required></div><div class="field"><label>Last Name</label><input type="text" placeholder="e.g. Ibrahim" required></div></div>
+        <div class="field"><label>Email Address</label><input type="email" placeholder="teacher@school.edu.ng" required></div>
+        <div class="form-row"><div class="field"><label>Phone</label><input type="tel" placeholder="08012345678"></div><div class="field"><label>Specialization</label><input type="text" placeholder="e.g. Mathematics"></div></div>
+        <div class="field"><label>Qualification</label><select><option>NCE</option><option>B.Ed</option><option>B.Sc</option><option>PGDE</option><option>M.Sc/M.Ed</option><option>Ph.D</option></select></div>
+      </form>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('addTeacherModal')">Cancel</button>
+      <button class="btn btn-primary" data-label="Add Teacher" onclick="submitModal('addTeacherForm','addTeacherModal','Teacher added successfully!')">Add Teacher</button>
+    </div>
+  </div>
+</div>
+
+<!-- Create Class Modal -->
+<div class="modal-backdrop" id="addClassModal">
+  <div class="modal">
+    <div class="modal-head"><h3><i class="fas fa-layer-group"></i> Create Class</h3><button class="modal-close" onclick="closeModal('addClassModal')"><i class="fas fa-times"></i></button></div>
+    <div class="modal-body">
+      <form id="addClassForm">
+        <div class="field"><label>Class Name</label><input type="text" placeholder="e.g. JSS1A or SS2 Science" required></div>
+        <div class="form-row">
+          <div class="field"><label>Level</label><select><option>JSS 1</option><option>JSS 2</option><option>JSS 3</option><option>SS 1</option><option>SS 2</option><option>SS 3</option></select></div>
+          <div class="field"><label>Arm / Section</label><input type="text" placeholder="e.g. A, B, Science, Arts"></div>
+        </div>
+        <div class="field"><label>Class Teacher (Optional)</label><input type="text" placeholder="Assign a class teacher"></div>
+        <div class="field"><label>Max Students</label><input type="number" placeholder="e.g. 45" min="1"></div>
+      </form>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('addClassModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="submitModal('addClassForm','addClassModal','Class created successfully!')">Create Class</button>
+    </div>
+  </div>
+</div>
+
+<!-- Create Subject Modal -->
+<div class="modal-backdrop" id="addSubjectModal">
+  <div class="modal">
+    <div class="modal-head"><h3><i class="fas fa-book"></i> Create Subject</h3><button class="modal-close" onclick="closeModal('addSubjectModal')"><i class="fas fa-times"></i></button></div>
+    <div class="modal-body">
+      <form id="addSubjectForm">
+        <div class="field"><label>Subject Name</label><input type="text" placeholder="e.g. Mathematics, English Language" required></div>
+        <div class="form-row">
+          <div class="field"><label>Subject Code</label><input type="text" placeholder="e.g. MATH, ENG"></div>
+          <div class="field"><label>Department</label><select><option>General</option><option>Sciences</option><option>Arts</option><option>Commercial</option><option>Technical</option></select></div>
+        </div>
+        <div class="field"><label>Applicable Classes</label><input type="text" placeholder="e.g. JSS1, JSS2, JSS3 or All Classes"></div>
+      </form>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('addSubjectModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="submitModal('addSubjectForm','addSubjectModal','Subject created successfully!')">Create Subject</button>
+    </div>
+  </div>
+</div>
+
+<script src="../../js/utils.js"></script>
+<script>
+// User info
+const user = JSON.parse(localStorage.getItem('echo_user') || '{}');
+const name = [user.first_name, user.last_name].filter(Boolean).join(' ') || 'Admin';
+const initials = name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+document.getElementById('sidebarName').textContent = name;
+document.getElementById('sidebarInitials').textContent = initials;
+document.getElementById('topbarInitials').textContent = initials;
+
+// Onboarding checklist
+const completedSteps = JSON.parse(localStorage.getItem('echo_onboarding') || '[]');
+const dismissed = localStorage.getItem('echo_onboarding_dismissed') === 'true';
+
+if (dismissed) {
+  document.getElementById('onboardingCard').style.display = 'none';
+} else {
+  completedSteps.forEach(s => markStep(s, false));
+  updateProgress();
+}
+
+function completeStep(num) {
+  if (!completedSteps.includes(num)) {
+    completedSteps.push(num);
+    localStorage.setItem('echo_onboarding', JSON.stringify(completedSteps));
+  }
+  markStep(num, true);
+  updateProgress();
+  if (completedSteps.length === 4) {
+    setTimeout(() => {
+      toast('All setup steps complete! Your school is ready 🎉', 'success');
+      setTimeout(() => dismissOnboarding(), 2000);
+    }, 300);
+  }
+}
+
+function markStep(num, animate) {
+  const step = document.getElementById('step' + num);
+  if (!step) return;
+  const check = step.querySelector('.step-check');
+  step.style.borderColor = 'var(--echo-green)';
+  step.style.background = 'rgba(16,185,129,.04)';
+  step.style.cursor = 'default';
+  check.style.background = 'var(--echo-green)';
+  check.style.borderColor = 'var(--echo-green)';
+  check.style.color = 'white';
+  check.textContent = '✓';
+  step.querySelector('p').style.color = 'var(--gray-400)';
+}
+
+function updateProgress() {
+  document.getElementById('checkProgress').textContent = `${completedSteps.length} of 4 done`;
+}
+
+function dismissOnboarding() {
+  localStorage.setItem('echo_onboarding_dismissed', 'true');
+  const card = document.getElementById('onboardingCard');
+  card.style.opacity = '0';
+  card.style.transform = 'translateY(-8px)';
+  card.style.transition = 'all .3s ease';
+  setTimeout(() => card.style.display = 'none', 300);
+}
+
+function submitModal(formId, modalId, msg) {
+  const form = document.getElementById(formId);
+  if (!form.checkValidity()) { form.reportValidity(); return; }
+  const btn = document.querySelector(`#${modalId} .modal-foot .btn-primary`);
+  btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+  setTimeout(() => {
+    closeModal(modalId);
+    toast(msg, 'success');
+    form.reset();
+    btn.disabled = false; btn.innerHTML = btn.dataset.label || 'Save';
+  }, 900);
+}
+</script>
+
+<script>
+// Onboarding checklist
+let completed = JSON.parse(localStorage.getItem('echo_onboard') || '[]');
+
+function initChecklist() {
+  if (localStorage.getItem('echo_onboard_done') === 'true') {
+    const card = document.getElementById('onboardCard');
+    if (card) card.style.display = 'none';
+    return;
+  }
+  completed.forEach(id => markDone(id, false));
+  updateProgress();
+}
+
+function completeStep(id) {
+  if (completed.includes(id)) return;
+  completed.push(id);
+  localStorage.setItem('echo_onboard', JSON.stringify(completed));
+  markDone(id, true);
+  updateProgress();
+  if (completed.length === 5) {
+    setTimeout(() => {
+      toast('🎉 Setup complete! Your school is ready.', 'success');
+      setTimeout(() => dismissOnboarding(), 2000);
+    }, 400);
+  }
+}
+
+function markDone(id, animate) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.style.borderColor = 'var(--echo-green)';
+  el.style.background = 'rgba(16,185,129,0.04)';
+  el.style.cursor = 'default';
+  const check = el.querySelector('.step-check');
+  check.style.background = 'var(--echo-green)';
+  check.style.borderColor = 'var(--echo-green)';
+  check.style.color = '#fff';
+  check.innerHTML = '✓';
+  el.querySelector('[style*="font-weight:600"]').style.color = 'var(--gray-400)';
+  el.querySelector('[style*="font-weight:600"]').style.textDecoration = 'line-through';
+}
+
+function updateProgress() {
+  const el = document.getElementById('checkProgress');
+  if (el) el.textContent = `${completed.length} / 5`;
+}
+
+function dismissOnboarding() {
+  localStorage.setItem('echo_onboard_done', 'true');
+  const card = document.getElementById('onboardCard');
+  if (card) { card.style.opacity = '0'; card.style.transform = 'scale(0.97)'; card.style.transition = 'all .3s'; setTimeout(() => card.style.display = 'none', 300); }
+}
+
+initChecklist();
+</script>
+
+</body></html>

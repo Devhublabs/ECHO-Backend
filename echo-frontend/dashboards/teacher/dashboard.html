@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teacher Dashboard — Echo</title>
+<link rel="stylesheet" href="../../css/layout.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<div class="shell">
+<aside class="sidebar">
+  <div class="sidebar-brand"><div class="brand-mark">E</div><span class="brand-name">Echo</span></div>
+  <nav class="sidebar-nav">
+    <div class="nav-label">Teaching</div>
+    <a href="dashboard.html" class="nav-link active"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="enter-grades.html" class="nav-link"><i class="fas fa-graduation-cap"></i> Enter Grades</a>
+    <a href="grades.html" class="nav-link"><i class="fas fa-chart-bar"></i> View Grades</a>
+    <a href="attendance.html" class="nav-link"><i class="fas fa-calendar-check"></i> Mark Attendance</a>
+    <div class="nav-label">Classes</div>
+    <a href="classes.html" class="nav-link"><i class="fas fa-users"></i> My Classes</a>
+    <a href="assignments.html" class="nav-link"><i class="fas fa-tasks"></i> Assignments</a>
+    <a href="materials.html" class="nav-link"><i class="fas fa-folder"></i> Materials</a>
+    <div class="nav-label">Account</div>
+    <a href="notifications.html" class="nav-link"><i class="fas fa-bell"></i> Notifications</a>
+    <a href="profile.html" class="nav-link"><i class="fas fa-user"></i> Profile</a>
+    <a href="#" class="nav-link" data-logout><i class="fas fa-sign-out-alt"></i> Logout</a>
+  </nav>
+  <div class="sidebar-user">
+    <div class="sidebar-user-inner">
+      <div class="user-avatar-sm" id="sidebarInitials">TC</div>
+      <div class="user-info-sm"><p id="sidebarName">Teacher</p><span>Class Teacher</span></div>
+    </div>
+  </div>
+</aside>
+<div class="sidebar-overlay"></div>
+
+<div class="main">
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="topbar-btn hamburger"><i class="fas fa-bars"></i></button>
+      <div><h1>Teacher Dashboard</h1><p id="live-time"></p></div>
+    </div>
+    <div class="topbar-right">
+      <button class="topbar-btn"><i class="fas fa-bell"></i><span class="notif-dot"></span></button>
+      <div class="topbar-avatar" id="topbarInitials">TC</div>
+    </div>
+  </header>
+
+  <div class="page-body">
+    <!-- Welcome banner -->
+    <div style="background:linear-gradient(135deg,var(--echo-dark),var(--echo-blue));border-radius:var(--radius-lg);padding:1.5rem 2rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;">
+      <div>
+        <h2 style="color:#fff;font-size:1.2rem;margin-bottom:.35rem;">Welcome back, <span id="welcomeName">Teacher</span>!</h2>
+        <p style="color:rgba(255,255,255,.7);font-size:.82rem;">You have 5 submissions to review and 2 pending tasks.</p>
+      </div>
+      <a href="enter-grades.html" class="btn btn-primary" style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);color:#fff;flex-shrink:0;">
+        <i class="fas fa-graduation-cap"></i> Enter Grades
+      </a>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-top"><div class="stat-icon blue"><i class="fas fa-users"></i></div><span class="stat-badge up">+1</span></div>
+        <div class="stat-val">4</div><div class="stat-lbl">Active Classes</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-top"><div class="stat-icon green"><i class="fas fa-folder"></i></div><span class="stat-badge up">+8</span></div>
+        <div class="stat-val">42</div><div class="stat-lbl">Materials Uploaded</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-top"><div class="stat-icon orange"><i class="fas fa-clock"></i></div><span class="stat-badge down">5 due</span></div>
+        <div class="stat-val">5</div><div class="stat-lbl">Pending Reviews</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-top"><div class="stat-icon purple"><i class="fas fa-chart-line"></i></div><span class="stat-badge up">+2.3%</span></div>
+        <div class="stat-val">78.5%</div><div class="stat-lbl">Class Average</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:1.25rem;">
+      <!-- Active Classes -->
+      <div class="section-card">
+        <div class="section-head"><h2>My Active Classes</h2><a href="classes.html">Manage All</a></div>
+        <div style="padding:.75rem;display:grid;grid-template-columns:1fr 1fr;gap:.75rem;">
+          <div style="border:1px solid var(--gray-200);border-radius:var(--radius);padding:1rem;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.5rem;">
+              <div><div style="font-weight:700;font-size:.88rem;">SS2A — Mathematics</div><div style="font-size:.72rem;color:var(--gray-400);">MATH-SS2A-2025</div></div>
+              <span class="badge badge-green">Active</span>
+            </div>
+            <p style="font-size:.75rem;color:var(--gray-500);margin-bottom:.75rem;"><i class="fas fa-users"></i> 45 students &nbsp; <i class="fas fa-clock"></i> Mon, Wed, Fri</p>
+            <div style="display:flex;gap:.4rem;">
+              <a href="enter-grades.html" class="btn btn-primary btn-sm" style="flex:1;justify-content:center;"><i class="fas fa-graduation-cap"></i> Grades</a>
+              <a href="attendance.html" class="btn btn-ghost btn-sm" style="flex:1;justify-content:center;"><i class="fas fa-check"></i> Attend.</a>
+            </div>
+          </div>
+          <div style="border:1px solid var(--gray-200);border-radius:var(--radius);padding:1rem;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.5rem;">
+              <div><div style="font-weight:700;font-size:.88rem;">SS2B — Mathematics</div><div style="font-size:.72rem;color:var(--gray-400);">MATH-SS2B-2025</div></div>
+              <span class="badge badge-green">Active</span>
+            </div>
+            <p style="font-size:.75rem;color:var(--gray-500);margin-bottom:.75rem;"><i class="fas fa-users"></i> 40 students &nbsp; <i class="fas fa-clock"></i> Tue, Thu</p>
+            <div style="display:flex;gap:.4rem;">
+              <a href="enter-grades.html" class="btn btn-primary btn-sm" style="flex:1;justify-content:center;"><i class="fas fa-graduation-cap"></i> Grades</a>
+              <a href="attendance.html" class="btn btn-ghost btn-sm" style="flex:1;justify-content:center;"><i class="fas fa-check"></i> Attend.</a>
+            </div>
+          </div>
+          <div style="border:1px solid var(--gray-200);border-radius:var(--radius);padding:1rem;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.5rem;">
+              <div><div style="font-weight:700;font-size:.88rem;">SS1A — Physics</div><div style="font-size:.72rem;color:var(--gray-400);">PHYS-SS1A-2025</div></div>
+              <span class="badge badge-green">Active</span>
+            </div>
+            <p style="font-size:.75rem;color:var(--gray-500);margin-bottom:.75rem;"><i class="fas fa-users"></i> 38 students &nbsp; <i class="fas fa-clock"></i> Mon, Thu</p>
+            <div style="display:flex;gap:.4rem;">
+              <a href="enter-grades.html" class="btn btn-primary btn-sm" style="flex:1;justify-content:center;"><i class="fas fa-graduation-cap"></i> Grades</a>
+              <a href="attendance.html" class="btn btn-ghost btn-sm" style="flex:1;justify-content:center;"><i class="fas fa-check"></i> Attend.</a>
+            </div>
+          </div>
+          <div style="border:1px solid var(--gray-200);border-radius:var(--radius);padding:1rem;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.5rem;">
+              <div><div style="font-weight:700;font-size:.88rem;">SS3A — Advanced Mathematics</div><div style="font-size:.72rem;color:var(--gray-400);">ADV-SS3A-2025</div></div>
+              <span class="badge badge-green">Active</span>
+            </div>
+            <p style="font-size:.75rem;color:var(--gray-500);margin-bottom:.75rem;"><i class="fas fa-users"></i> 32 students &nbsp; <i class="fas fa-clock"></i> Tue, Fri</p>
+            <div style="display:flex;gap:.4rem;">
+              <a href="enter-grades.html" class="btn btn-primary btn-sm" style="flex:1;justify-content:center;"><i class="fas fa-graduation-cap"></i> Grades</a>
+              <a href="attendance.html" class="btn btn-ghost btn-sm" style="flex:1;justify-content:center;"><i class="fas fa-check"></i> Attend.</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right -->
+      <div>
+        <div class="section-card" style="margin-bottom:1.25rem;">
+          <div class="section-head"><h2>Quick Stats</h2></div>
+          <div class="section-body" style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;">
+            <div style="text-align:center;padding:.85rem;background:var(--gray-50);border-radius:8px;"><div style="font-size:1.5rem;font-weight:800;color:var(--gray-900);">24</div><div style="font-size:.72rem;color:var(--gray-500);">Active Assignments</div></div>
+            <div style="text-align:center;padding:.85rem;background:var(--gray-50);border-radius:8px;"><div style="font-size:1.5rem;font-weight:800;color:var(--echo-green);">89%</div><div style="font-size:.72rem;color:var(--gray-500);">Submission Rate</div></div>
+            <div style="text-align:center;padding:.85rem;background:var(--gray-50);border-radius:8px;"><div style="font-size:1.5rem;font-weight:800;color:var(--echo-orange);">5</div><div style="font-size:.72rem;color:var(--gray-500);">Pending Reviews</div></div>
+            <div style="text-align:center;padding:.85rem;background:var(--gray-50);border-radius:8px;"><div style="font-size:1.5rem;font-weight:800;color:var(--gray-900);">142</div><div style="font-size:.72rem;color:var(--gray-500);">Graded This Week</div></div>
+          </div>
+        </div>
+        <div class="section-card">
+          <div class="section-head"><h2>Quick Actions</h2></div>
+          <div class="section-body" style="display:flex;flex-direction:column;gap:.5rem;">
+            <a href="enter-grades.html" class="btn btn-primary btn-full"><i class="fas fa-graduation-cap"></i> Enter Grades</a>
+            <a href="attendance.html" class="btn btn-ghost btn-full"><i class="fas fa-calendar-check"></i> Mark Attendance</a>
+            <button class="btn btn-ghost btn-full" onclick="openModal('newAssignmentModal')"><i class="fas fa-plus"></i> New Assignment</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- New Assignment Modal -->
+<div class="modal-backdrop" id="newAssignmentModal">
+  <div class="modal">
+    <div class="modal-head"><h3><i class="fas fa-tasks"></i> New Assignment</h3><button class="modal-close" onclick="closeModal('newAssignmentModal')"><i class="fas fa-times"></i></button></div>
+    <div class="modal-body">
+      <form id="assignForm">
+        <div class="field"><label>Select Class</label><select required><option value="">Choose class</option><option>SS2A — Mathematics</option><option>SS2B — Mathematics</option><option>SS1A — Physics</option><option>SS3A — Advanced Mathematics</option></select></div>
+        <div class="field"><label>Assignment Title</label><input type="text" placeholder="e.g. Algebra Basics Assignment" required></div>
+        <div class="form-row">
+          <div class="field"><label>Type</label><select><option>Theory</option><option>Multiple Choice</option><option>Practical</option></select></div>
+          <div class="field"><label>Due Date</label><input type="date" required></div>
+        </div>
+        <div class="field"><label>Instructions (Optional)</label><textarea placeholder="Add special instructions for students..."></textarea></div>
+      </form>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('newAssignmentModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="submitAssign()">Create Assignment</button>
+    </div>
+  </div>
+</div>
+
+<script src="../../js/utils.js"></script>
+<script>
+const user = JSON.parse(localStorage.getItem('echo_user') || '{}');
+const name = [user.first_name, user.last_name].filter(Boolean).join(' ') || 'Teacher';
+const initials = name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+document.getElementById('sidebarName').textContent = name;
+document.getElementById('sidebarInitials').textContent = initials;
+document.getElementById('topbarInitials').textContent = initials;
+document.getElementById('welcomeName').textContent = name;
+
+function submitAssign() {
+  const form = document.getElementById('assignForm');
+  if (!form.checkValidity()) { form.reportValidity(); return; }
+  const btn = document.querySelector('#newAssignmentModal .btn-primary');
+  btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+  setTimeout(() => { closeModal('newAssignmentModal'); toast('Assignment created!', 'success'); form.reset(); btn.disabled = false; btn.innerHTML = 'Create Assignment'; }, 900);
+}
+</script>
+</body></html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assignments — Echo</title>
+<link rel="stylesheet" href="../../css/layout.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<div class="shell">
+<aside class="sidebar">
+  <div class="sidebar-brand"><div class="brand-mark">E</div><span class="brand-name">Echo</span></div>
+  <nav class="sidebar-nav">
+    <div class="nav-label">My Learning</div>
+    <a href="dashboard.html" class="nav-link"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="grades.html" class="nav-link"><i class="fas fa-chart-bar"></i> My Grades</a>
+    <a href="assignments.html" class="nav-link active"><i class="fas fa-tasks"></i> Assignments</a>
+    <a href="attendance.html" class="nav-link"><i class="fas fa-calendar-check"></i> Attendance</a>
+    <div class="nav-label">School</div>
+    <a href="notifications.html" class="nav-link"><i class="fas fa-bell"></i> Notifications</a>
+    <a href="materials.html" class="nav-link"><i class="fas fa-book"></i> Materials</a>
+    <div class="nav-label">Account</div>
+    <a href="#" class="nav-link" data-logout><i class="fas fa-sign-out-alt"></i> Logout</a>
+  </nav>
+  <div class="sidebar-user"><div class="sidebar-user-inner"><div class="user-avatar-sm">ST</div><div class="user-info-sm"><p>Student</p><span>SS2A</span></div></div></div>
+</aside>
+<div class="sidebar-overlay"></div>
+
+<div class="main">
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="topbar-btn hamburger"><i class="fas fa-bars"></i></button>
+      <div><h1>My Assignments</h1><p id="live-time"></p></div>
+    </div>
+    <div class="topbar-right">
+      <button class="topbar-btn"><i class="fas fa-bell"></i><span class="notif-dot"></span></button>
+      <div class="topbar-avatar">ST</div>
+    </div>
+  </header>
+
+  <div class="page-body">
+    <!-- Stats -->
+    <div class="stats-row" style="grid-template-columns:repeat(3,1fr);margin-bottom:1.25rem;">
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon orange"><i class="fas fa-clock"></i></div></div><div class="stat-val">3</div><div class="stat-lbl">Pending</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon green"><i class="fas fa-check-circle"></i></div></div><div class="stat-val">12</div><div class="stat-lbl">Submitted</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon blue"><i class="fas fa-star"></i></div></div><div class="stat-val">89%</div><div class="stat-lbl">Avg Score</div></div>
+    </div>
+
+    <!-- Filter tabs -->
+    <div style="display:flex;gap:.4rem;margin-bottom:1rem;">
+      <button class="btn btn-primary btn-sm" onclick="filterAssign(this,'all')">All</button>
+      <button class="btn btn-ghost btn-sm" onclick="filterAssign(this,'pending')">Pending</button>
+      <button class="btn btn-ghost btn-sm" onclick="filterAssign(this,'submitted')">Submitted</button>
+      <button class="btn btn-ghost btn-sm" onclick="filterAssign(this,'graded')">Graded</button>
+    </div>
+
+    <!-- Assignments -->
+    <div class="section-card">
+      <div id="assignList">
+
+        <div class="assign-item" data-status="pending" style="display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;border-bottom:1px solid var(--gray-100);">
+          <div style="width:42px;height:42px;border-radius:10px;background:rgba(245,158,11,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-calculator" style="color:var(--echo-orange);"></i></div>
+          <div style="flex:1;">
+            <div style="font-weight:700;font-size:.88rem;">Algebra Basics — Chapter 5</div>
+            <div style="font-size:.75rem;color:var(--gray-500);margin-top:.15rem;">Mathematics • Mr. Adebayo • 20 questions</div>
+          </div>
+          <div style="text-align:right;flex-shrink:0;">
+            <span class="badge badge-orange">Due Tomorrow</span>
+            <div style="font-size:.72rem;color:var(--gray-400);margin-top:.25rem;">March 17, 2026</div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="submitAssign(this)"><i class="fas fa-paper-plane"></i> Submit</button>
+        </div>
+
+        <div class="assign-item" data-status="pending" style="display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;border-bottom:1px solid var(--gray-100);">
+          <div style="width:42px;height:42px;border-radius:10px;background:rgba(59,130,246,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-pen" style="color:var(--echo-blue);"></i></div>
+          <div style="flex:1;">
+            <div style="font-weight:700;font-size:.88rem;">Comprehension Essay — The Environment</div>
+            <div style="font-size:.75rem;color:var(--gray-500);margin-top:.15rem;">English Language • Mrs. Okafor • 500 words</div>
+          </div>
+          <div style="text-align:right;flex-shrink:0;">
+            <span class="badge badge-blue">Due in 3 days</span>
+            <div style="font-size:.72rem;color:var(--gray-400);margin-top:.25rem;">March 19, 2026</div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="submitAssign(this)"><i class="fas fa-paper-plane"></i> Submit</button>
+        </div>
+
+        <div class="assign-item" data-status="pending" style="display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;border-bottom:1px solid var(--gray-100);">
+          <div style="width:42px;height:42px;border-radius:10px;background:rgba(139,92,246,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-flask" style="color:var(--echo-purple);"></i></div>
+          <div style="flex:1;">
+            <div style="font-weight:700;font-size:.88rem;">Practical Lab Report — Motion</div>
+            <div style="font-size:.75rem;color:var(--gray-500);margin-top:.15rem;">Physics • Mr. Chinedu • Lab report</div>
+          </div>
+          <div style="text-align:right;flex-shrink:0;">
+            <span class="badge badge-gray">Due in 5 days</span>
+            <div style="font-size:.72rem;color:var(--gray-400);margin-top:.25rem;">March 21, 2026</div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="submitAssign(this)"><i class="fas fa-paper-plane"></i> Submit</button>
+        </div>
+
+        <div class="assign-item" data-status="submitted" style="display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;border-bottom:1px solid var(--gray-100);">
+          <div style="width:42px;height:42px;border-radius:10px;background:rgba(16,185,129,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-dna" style="color:var(--echo-green);"></i></div>
+          <div style="flex:1;"><div style="font-weight:700;font-size:.88rem;">Cell Structure Diagram</div><div style="font-size:.75rem;color:var(--gray-500);margin-top:.15rem;">Biology • Mrs. Adaeze</div></div>
+          <div style="text-align:right;flex-shrink:0;"><span class="badge badge-green">Submitted</span><div style="font-size:.72rem;color:var(--gray-400);margin-top:.25rem;">March 10, 2026</div></div>
+          <span style="font-size:.78rem;color:var(--gray-400);flex-shrink:0;">Awaiting grade</span>
+        </div>
+
+        <div class="assign-item" data-status="graded" style="display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;">
+          <div style="width:42px;height:42px;border-radius:10px;background:rgba(59,130,246,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-calculator" style="color:var(--echo-blue);"></i></div>
+          <div style="flex:1;"><div style="font-weight:700;font-size:.88rem;">Trigonometry Exercise</div><div style="font-size:.75rem;color:var(--gray-500);margin-top:.15rem;">Mathematics • Mr. Adebayo</div></div>
+          <div style="text-align:right;flex-shrink:0;"><span class="badge badge-blue">Graded</span><div style="font-size:.72rem;color:var(--gray-400);margin-top:.25rem;">March 5, 2026</div></div>
+          <span style="font-size:.95rem;font-weight:800;color:var(--echo-green);flex-shrink:0;">88/100</span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script src="../../js/utils.js"></script>
+<script>
+function filterAssign(btn, status) {
+  document.querySelectorAll('[onclick*="filterAssign"]').forEach(b => b.className = 'btn btn-ghost btn-sm');
+  btn.className = 'btn btn-primary btn-sm';
+  document.querySelectorAll('.assign-item').forEach(item => {
+    item.style.display = (status === 'all' || item.dataset.status === status) ? 'flex' : 'none';
+  });
+}
+
+function submitAssign(btn) {
+  const row = btn.closest('.assign-item');
+  btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+  setTimeout(() => {
+    row.dataset.status = 'submitted';
+    row.querySelector('.badge').className = 'badge badge-green';
+    row.querySelector('.badge').textContent = 'Submitted';
+    btn.replaceWith(Object.assign(document.createElement('span'), {
+      textContent: 'Awaiting grade',
+      style: 'font-size:.78rem;color:var(--gray-400);flex-shrink:0;'
+    }));
+    toast('Assignment submitted!', 'success');
+  }, 800);
+}
+</script>
+</body></html>

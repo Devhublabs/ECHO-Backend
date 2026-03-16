@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teachers — Echo</title>
+<link rel="stylesheet" href="../../css/layout.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<div class="shell">
+<aside class="sidebar">
+  <div class="sidebar-brand"><div class="brand-mark">E</div><span class="brand-name">Echo</span></div>
+  <nav class="sidebar-nav">
+    <div class="nav-label">Main</div>
+    <a href="dashboard.html" class="nav-link"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="registrations.html" class="nav-link"><i class="fas fa-user-check"></i> Approve Registrations</a>
+    <div class="nav-label">People</div>
+    <a href="students.html" class="nav-link"><i class="fas fa-user-graduate"></i> Students</a>
+    <a href="teachers.html" class="nav-link active"><i class="fas fa-chalkboard-teacher"></i> Teachers</a>
+    <div class="nav-label">Manage</div>
+    <a href="#" class="nav-link" onclick="openModal('addClassModal');return false;"><i class="fas fa-layer-group"></i> Create Class</a>
+    <a href="#" class="nav-link" onclick="openModal('addSubjectModal');return false;"><i class="fas fa-book"></i> Create Subject</a>
+    <div class="nav-label">Account</div>
+    <a href="subscription.html" class="nav-link"><i class="fas fa-credit-card"></i> Subscription</a>
+    <a href="#" class="nav-link" data-logout><i class="fas fa-sign-out-alt"></i> Logout</a>
+  </nav>
+  <div class="sidebar-user"><div class="sidebar-user-inner"><div class="user-avatar-sm">AD</div><div class="user-info-sm"><p>Admin</p><span>School Administrator</span></div></div></div>
+</aside>
+<div class="sidebar-overlay"></div>
+<div class="main">
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="topbar-btn hamburger"><i class="fas fa-bars"></i></button>
+      <div><h1>Teachers</h1><p id="live-time"></p></div>
+    </div>
+    <div class="topbar-right">
+      <button class="topbar-btn"><i class="fas fa-bell"></i><span class="notif-dot"></span></button>
+      <div class="topbar-avatar">AD</div>
+    </div>
+  </header>
+
+  <div class="page-body">
+    <div class="stats-row" style="grid-template-columns:repeat(3,1fr);margin-bottom:1.25rem;">
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon blue"><i class="fas fa-chalkboard-teacher"></i></div></div><div class="stat-val">24</div><div class="stat-lbl">Total Teachers</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon green"><i class="fas fa-check-circle"></i></div></div><div class="stat-val">21</div><div class="stat-lbl">Active</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon orange"><i class="fas fa-clock"></i></div></div><div class="stat-val">3</div><div class="stat-lbl">Pending Approval</div></div>
+    </div>
+
+    <div class="section-card">
+      <div class="section-head">
+        <h2>All Teachers</h2>
+        <div style="display:flex;gap:.65rem;align-items:center;flex-wrap:wrap;">
+          <input type="text" placeholder="&#128269; Search teachers..." oninput="searchTeachers(this.value)" style="padding:.45rem .8rem;border:1.5px solid var(--gray-200);border-radius:8px;font-size:.8rem;outline:none;width:200px;">
+          <button class="btn btn-primary btn-sm" onclick="openModal('addTeacherModal')"><i class="fas fa-plus"></i> Add Teacher</button>
+        </div>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="echo-table">
+          <thead><tr><th>Teacher</th><th>Specialization</th><th>Qualification</th><th>Email</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody id="teacherRows"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- Add Teacher Modal -->
+<div class="modal-backdrop" id="addTeacherModal">
+  <div class="modal">
+    <div class="modal-head"><h3><i class="fas fa-user-plus"></i> Add Teacher</h3><button class="modal-close" onclick="closeModal('addTeacherModal')"><i class="fas fa-times"></i></button></div>
+    <div class="modal-body">
+      <form id="addTeacherForm">
+        <div class="form-row"><div class="field"><label>First Name</label><input type="text" required></div><div class="field"><label>Last Name</label><input type="text" required></div></div>
+        <div class="field"><label>Email</label><input type="email" required></div>
+        <div class="form-row"><div class="field"><label>Phone</label><input type="tel"></div><div class="field"><label>Specialization</label><input type="text" required></div></div>
+        <div class="field"><label>Qualification</label><select><option>NCE</option><option>B.Ed</option><option>B.Sc</option><option>PGDE</option><option>M.Sc/M.Ed</option><option>Ph.D</option></select></div>
+      </form>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('addTeacherModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="addTeacher()">Add Teacher</button>
+    </div>
+  </div>
+</div>
+
+<script src="../../js/utils.js"></script>
+<script>
+const teachers = [
+  {name:'Mr. Adebayo Ibrahim', spec:'Mathematics', qual:'M.Sc', email:'adebayo@school.ng', status:'active'},
+  {name:'Mrs. Ngozi Okafor', spec:'English Language', qual:'B.Ed', email:'ngozi@school.ng', status:'active'},
+  {name:'Dr. Chinedu Obi', spec:'Physics', qual:'Ph.D', email:'chinedu@school.ng', status:'active'},
+  {name:'Mrs. Adaeze Eze', spec:'Biology', qual:'B.Sc', email:'adaeze@school.ng', status:'active'},
+  {name:'Mr. Rotimi Sule', spec:'Chemistry', qual:'PGDE', email:'rotimi@school.ng', status:'active'},
+  {name:'Miss Fatima Garba', spec:'Economics', qual:'B.Sc', email:'fatima@school.ng', status:'pending'},
+  {name:'Mr. Emeka Nnadi', spec:'Civic Education', qual:'NCE', email:'emeka@school.ng', status:'active'},
+  {name:'Mrs. Halima Yusuf', spec:'Geography', qual:'B.Ed', email:'halima@school.ng', status:'pending'},
+];
+const colors = ['#3b82f6','#10b981','#f59e0b','#8b5cf6','#ef4444','#06b6d4'];
+let filteredT = [...teachers];
+
+function renderTeachers(list) {
+  document.getElementById('teacherRows').innerHTML = list.map((t,i) => `
+    <tr>
+      <td><div style="display:flex;align-items:center;gap:.65rem;">
+        <div class="avatar" style="background:${colors[i%colors.length]};color:#fff;">${t.name.replace('Mr. ','').replace('Mrs. ','').replace('Miss ','').replace('Dr. ','').split(' ').map(w=>w[0]).join('').slice(0,2)}</div>
+        <span style="font-weight:600;">${t.name}</span>
+      </div></td>
+      <td>${t.spec}</td>
+      <td><span class="badge badge-blue">${t.qual}</span></td>
+      <td style="color:var(--gray-500);">${t.email}</td>
+      <td><span class="badge ${t.status==='active'?'badge-green':'badge-orange'}">${t.status==='active'?'Active':'Pending'}</span></td>
+      <td><button class="btn btn-ghost btn-sm" onclick="toast('Opening teacher profile...','default')"><i class="fas fa-eye"></i> View</button></td>
+    </tr>`).join('');
+}
+
+function searchTeachers(q) {
+  filteredT = teachers.filter(t => t.name.toLowerCase().includes(q.toLowerCase()) || t.spec.toLowerCase().includes(q.toLowerCase()));
+  renderTeachers(filteredT);
+}
+
+function addTeacher() {
+  const form = document.getElementById('addTeacherForm');
+  if (!form.checkValidity()) { form.reportValidity(); return; }
+  const btn = document.querySelector('#addTeacherModal .btn-primary');
+  btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+  setTimeout(() => { closeModal('addTeacherModal'); toast('Teacher added successfully!', 'success'); form.reset(); btn.disabled = false; btn.innerHTML = 'Add Teacher'; }, 900);
+}
+
+renderTeachers(teachers);
+</script>
+</body></html>

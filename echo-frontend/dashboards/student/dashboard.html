@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Dashboard — Echo</title>
+<link rel="stylesheet" href="../../css/layout.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<div class="shell">
+<aside class="sidebar">
+  <div class="sidebar-brand"><div class="brand-mark">E</div><span class="brand-name">Echo</span></div>
+  <nav class="sidebar-nav">
+    <div class="nav-label">My Learning</div>
+    <a href="dashboard.html" class="nav-link active"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="grades.html" class="nav-link"><i class="fas fa-chart-bar"></i> My Grades</a>
+    <a href="assignments.html" class="nav-link"><i class="fas fa-tasks"></i> Assignments</a>
+    <a href="attendance.html" class="nav-link"><i class="fas fa-calendar-check"></i> Attendance</a>
+    <div class="nav-label">School</div>
+    <a href="notifications.html" class="nav-link"><i class="fas fa-bell"></i> Notifications</a>
+    <a href="materials.html" class="nav-link"><i class="fas fa-book"></i> Materials</a>
+    <div class="nav-label">Account</div>
+    <a href="profile.html" class="nav-link"><i class="fas fa-user"></i> Profile</a>
+    <a href="#" class="nav-link" data-logout><i class="fas fa-sign-out-alt"></i> Logout</a>
+  </nav>
+  <div class="sidebar-user">
+    <div class="sidebar-user-inner">
+      <div class="user-avatar-sm" id="sidebarInitials">ST</div>
+      <div class="user-info-sm"><p id="sidebarName">Student</p><span id="sidebarClass">Class</span></div>
+    </div>
+  </div>
+</aside>
+<div class="sidebar-overlay"></div>
+
+<div class="main">
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="topbar-btn hamburger"><i class="fas fa-bars"></i></button>
+      <div><h1>Student Dashboard</h1><p id="live-time"></p></div>
+    </div>
+    <div class="topbar-right">
+      <button class="topbar-btn"><i class="fas fa-bell"></i><span class="notif-dot"></span></button>
+      <div class="topbar-avatar" id="topbarInitials">ST</div>
+    </div>
+  </header>
+
+  <div class="page-body">
+    <!-- Welcome -->
+    <div style="background:linear-gradient(135deg,var(--echo-dark),var(--echo-blue));border-radius:var(--radius-lg);padding:1.5rem 2rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+      <div>
+        <h2 style="color:#fff;font-size:1.2rem;margin-bottom:.35rem;">Welcome back, <span id="welcomeName">Student</span>!</h2>
+        <p style="color:rgba(255,255,255,.7);font-size:.82rem;">You have 3 pending assignments this week. Stay on top of it!</p>
+      </div>
+      <a href="grades.html" class="btn" style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);color:#fff;flex-shrink:0;"><i class="fas fa-chart-bar"></i> View My Grades</a>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-top"><div class="stat-icon blue"><i class="fas fa-book-open"></i></div><span class="stat-badge neu">Term 1</span></div>
+        <div class="stat-val">8</div><div class="stat-lbl">Subjects</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-top"><div class="stat-icon green"><i class="fas fa-star"></i></div><span class="stat-badge up">↑ 3%</span></div>
+        <div class="stat-val">74%</div><div class="stat-lbl">Average Score</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-top"><div class="stat-icon orange"><i class="fas fa-tasks"></i></div><span class="stat-badge down">Due soon</span></div>
+        <div class="stat-val">3</div><div class="stat-lbl">Assignments Due</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-top"><div class="stat-icon purple"><i class="fas fa-calendar-check"></i></div><span class="stat-badge up">Good</span></div>
+        <div class="stat-val">92%</div><div class="stat-lbl">Attendance</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:1.25rem;">
+      <!-- Recent Grades -->
+      <div class="section-card">
+        <div class="section-head"><h2>Recent Grades</h2><a href="grades.html">View All →</a></div>
+        <table class="echo-table">
+          <thead><tr><th>Subject</th><th>Exam</th><th>Score</th><th>Grade</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Mathematics</strong></td><td style="color:var(--gray-500);">CA 1</td><td>82/100</td><td><span class="badge badge-green">B</span></td></tr>
+            <tr><td><strong>English Language</strong></td><td style="color:var(--gray-500);">CA 1</td><td>91/100</td><td><span class="badge badge-green">A</span></td></tr>
+            <tr><td><strong>Physics</strong></td><td style="color:var(--gray-500);">CA 1</td><td>67/100</td><td><span class="badge badge-blue">C</span></td></tr>
+            <tr><td><strong>Biology</strong></td><td style="color:var(--gray-500);">CA 1</td><td>78/100</td><td><span class="badge badge-green">B</span></td></tr>
+            <tr><td><strong>Chemistry</strong></td><td style="color:var(--gray-500);">CA 1</td><td>55/100</td><td><span class="badge badge-orange">D</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Right column -->
+      <div>
+        <!-- Upcoming Assignments -->
+        <div class="section-card" style="margin-bottom:1.25rem;">
+          <div class="section-head"><h2>Upcoming</h2><a href="assignments.html">All →</a></div>
+          <div style="padding:.75rem;">
+            <div style="padding:.75rem;border-radius:8px;background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.2);margin-bottom:.5rem;">
+              <div style="font-weight:600;font-size:.82rem;">Mathematics Assignment</div>
+              <div style="font-size:.72rem;color:var(--gray-500);margin-top:.2rem;">Due Tomorrow • Mr. Adebayo</div>
+            </div>
+            <div style="padding:.75rem;border-radius:8px;background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.2);margin-bottom:.5rem;">
+              <div style="font-weight:600;font-size:.82rem;">English Essay</div>
+              <div style="font-size:.72rem;color:var(--gray-500);margin-top:.2rem;">Due in 3 days • Mrs. Okafor</div>
+            </div>
+            <div style="padding:.75rem;border-radius:8px;background:var(--gray-50);border:1px solid var(--gray-200);">
+              <div style="font-weight:600;font-size:.82rem;">Physics Practical</div>
+              <div style="font-size:.72rem;color:var(--gray-500);margin-top:.2rem;">Due in 5 days • Mr. Chinedu</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Notifications -->
+        <div class="section-card">
+          <div class="section-head"><h2>Notifications</h2></div>
+          <div style="padding:.5rem .75rem;">
+            <div style="display:flex;gap:.65rem;padding:.65rem 0;border-bottom:1px solid var(--gray-100);"><div style="width:8px;height:8px;border-radius:50%;background:var(--echo-blue);margin-top:5px;flex-shrink:0;"></div><div><p style="font-size:.8rem;font-weight:500;margin:0;line-height:1.3;">CA 2 results published for Mathematics</p><span style="font-size:.7rem;color:var(--gray-400);">2 hours ago</span></div></div>
+            <div style="display:flex;gap:.65rem;padding:.65rem 0;border-bottom:1px solid var(--gray-100);"><div style="width:8px;height:8px;border-radius:50%;background:var(--echo-green);margin-top:5px;flex-shrink:0;"></div><div><p style="font-size:.8rem;font-weight:500;margin:0;line-height:1.3;">School fees payment reminder</p><span style="font-size:.7rem;color:var(--gray-400);">1 day ago</span></div></div>
+            <div style="display:flex;gap:.65rem;padding:.65rem 0;"><div style="width:8px;height:8px;border-radius:50%;background:var(--echo-orange);margin-top:5px;flex-shrink:0;"></div><div><p style="font-size:.8rem;font-weight:500;margin:0;line-height:1.3;">Mid-term exams begin next week</p><span style="font-size:.7rem;color:var(--gray-400);">2 days ago</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script src="../../js/utils.js"></script>
+<script>
+const user = JSON.parse(localStorage.getItem('echo_user') || '{}');
+const name = [user.first_name, user.last_name].filter(Boolean).join(' ') || 'Student';
+const initials = name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+document.getElementById('sidebarName').textContent = name;
+document.getElementById('sidebarInitials').textContent = initials;
+document.getElementById('topbarInitials').textContent = initials;
+document.getElementById('welcomeName').textContent = name;
+document.getElementById('sidebarClass').textContent = user.class_name || 'SS2A';
+</script>
+</body></html>

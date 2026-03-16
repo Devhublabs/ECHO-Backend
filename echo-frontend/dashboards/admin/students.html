@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Students — Echo</title>
+<link rel="stylesheet" href="../../css/layout.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<div class="shell">
+<aside class="sidebar">
+  <div class="sidebar-brand"><div class="brand-mark">E</div><span class="brand-name">Echo</span></div>
+  <nav class="sidebar-nav">
+    <div class="nav-label">Main</div>
+    <a href="dashboard.html" class="nav-link"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="registrations.html" class="nav-link"><i class="fas fa-user-check"></i> Approve Registrations</a>
+    <div class="nav-label">People</div>
+    <a href="students.html" class="nav-link active"><i class="fas fa-user-graduate"></i> Students</a>
+    <a href="teachers.html" class="nav-link"><i class="fas fa-chalkboard-teacher"></i> Teachers</a>
+    <div class="nav-label">Manage</div>
+    <a href="#" class="nav-link" onclick="openModal('addClassModal');return false;"><i class="fas fa-layer-group"></i> Create Class</a>
+    <a href="#" class="nav-link" onclick="openModal('addSubjectModal');return false;"><i class="fas fa-book"></i> Create Subject</a>
+    <div class="nav-label">Account</div>
+    <a href="subscription.html" class="nav-link"><i class="fas fa-credit-card"></i> Subscription</a>
+    <a href="#" class="nav-link" data-logout><i class="fas fa-sign-out-alt"></i> Logout</a>
+  </nav>
+  <div class="sidebar-user"><div class="sidebar-user-inner"><div class="user-avatar-sm">AD</div><div class="user-info-sm"><p>Admin</p><span>School Administrator</span></div></div></div>
+</aside>
+<div class="sidebar-overlay"></div>
+<div class="main">
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="topbar-btn hamburger"><i class="fas fa-bars"></i></button>
+      <div><h1>Students</h1><p id="live-time"></p></div>
+    </div>
+    <div class="topbar-right">
+      <button class="topbar-btn"><i class="fas fa-bell"></i><span class="notif-dot"></span></button>
+      <div class="topbar-avatar">AD</div>
+    </div>
+  </header>
+
+  <div class="page-body">
+    <div class="stats-row" style="grid-template-columns:repeat(4,1fr);margin-bottom:1.25rem;">
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon blue"><i class="fas fa-users"></i></div></div><div class="stat-val">286</div><div class="stat-lbl">Total Students</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon green"><i class="fas fa-check-circle"></i></div></div><div class="stat-val">271</div><div class="stat-lbl">Active</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon orange"><i class="fas fa-clock"></i></div></div><div class="stat-val">15</div><div class="stat-lbl">Pending Approval</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon purple"><i class="fas fa-layer-group"></i></div></div><div class="stat-val">12</div><div class="stat-lbl">Classes</div></div>
+    </div>
+
+    <div class="section-card">
+      <div class="section-head">
+        <h2>All Students</h2>
+        <div style="display:flex;gap:.65rem;align-items:center;flex-wrap:wrap;">
+          <input type="text" placeholder="&#128269; Search students..." oninput="searchStudents(this.value)" style="padding:.45rem .8rem;border:1.5px solid var(--gray-200);border-radius:8px;font-size:.8rem;outline:none;width:200px;">
+          <select onchange="filterClass(this.value)" style="padding:.45rem .75rem;border:1.5px solid var(--gray-200);border-radius:8px;font-size:.8rem;outline:none;cursor:pointer;">
+            <option value="">All Classes</option>
+            <option>JSS 1</option><option>JSS 2</option><option>JSS 3</option>
+            <option>SS 1</option><option>SS 2</option><option>SS 3</option>
+          </select>
+        </div>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="echo-table" id="studentsTable">
+          <thead><tr><th>Student</th><th>Class</th><th>Email</th><th>Phone</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody id="studentRows"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- View Student Modal -->
+<div class="modal-backdrop" id="viewStudentModal">
+  <div class="modal">
+    <div class="modal-head"><h3 id="viewStudentName">Student Details</h3><button class="modal-close" onclick="closeModal('viewStudentModal')"><i class="fas fa-times"></i></button></div>
+    <div class="modal-body" id="viewStudentBody"></div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal('viewStudentModal')">Close</button></div>
+  </div>
+</div>
+
+<script src="../../js/utils.js"></script>
+<script>
+const students = [
+  {name:'Chiamaka Okeke', class:'SS 2A', email:'chiamaka@email.com', phone:'08012345678', status:'active'},
+  {name:'Emeka Kalu', class:'SS 2A', email:'emeka@email.com', phone:'08023456789', status:'active'},
+  {name:'Amina Bello', class:'JSS 3A', email:'amina@email.com', phone:'08034567890', status:'active'},
+  {name:'Tunde Adeyemi', class:'SS 1B', email:'tunde@email.com', phone:'08045678901', status:'active'},
+  {name:'Ngozi Eze', class:'SS 2B', email:'ngozi@email.com', phone:'08056789012', status:'active'},
+  {name:'Bello Musa', class:'JSS 2A', email:'bello@email.com', phone:'08067890123', status:'pending'},
+  {name:'Chisom Obi', class:'SS 3A', email:'chisom@email.com', phone:'08078901234', status:'active'},
+  {name:'Fatima Sule', class:'JSS 1A', email:'fatima@email.com', phone:'08089012345', status:'active'},
+  {name:'Rotimi Babs', class:'SS 2B', email:'rotimi@email.com', phone:'08090123456', status:'active'},
+  {name:'Aisha Umar', class:'JSS 3B', email:'aisha@email.com', phone:'08001234567', status:'pending'},
+  {name:'Kayode Femi', class:'SS 1A', email:'kayode@email.com', phone:'08012340987', status:'active'},
+  {name:'Priscilla Udo', class:'SS 3B', email:'priscilla@email.com', phone:'08023451098', status:'active'},
+];
+
+const colors = ['#3b82f6','#10b981','#f59e0b','#8b5cf6','#ef4444','#06b6d4'];
+let filtered = [...students];
+
+function renderRows(list) {
+  document.getElementById('studentRows').innerHTML = list.map((s,i) => `
+    <tr>
+      <td><div style="display:flex;align-items:center;gap:.65rem;">
+        <div class="avatar" style="background:${colors[i%colors.length]};color:#fff;">${s.name.split(' ').map(w=>w[0]).join('').slice(0,2)}</div>
+        <span style="font-weight:600;">${s.name}</span>
+      </div></td>
+      <td><span class="badge badge-blue">${s.class}</span></td>
+      <td style="color:var(--gray-500);">${s.email}</td>
+      <td style="color:var(--gray-500);">${s.phone}</td>
+      <td><span class="badge ${s.status==='active'?'badge-green':'badge-orange'}">${s.status==='active'?'Active':'Pending'}</span></td>
+      <td><button class="btn btn-ghost btn-sm" onclick="viewStudent(${i})"><i class="fas fa-eye"></i> View</button></td>
+    </tr>`).join('');
+}
+
+function searchStudents(q) {
+  filtered = students.filter(s => s.name.toLowerCase().includes(q.toLowerCase()) || s.class.toLowerCase().includes(q.toLowerCase()) || s.email.toLowerCase().includes(q.toLowerCase()));
+  renderRows(filtered);
+}
+
+function filterClass(cls) {
+  filtered = cls ? students.filter(s => s.class.startsWith(cls)) : [...students];
+  renderRows(filtered);
+}
+
+function viewStudent(i) {
+  const s = filtered[i];
+  document.getElementById('viewStudentName').textContent = s.name;
+  document.getElementById('viewStudentBody').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.85rem;">
+      <div><p style="font-size:.72rem;color:var(--gray-400);margin-bottom:.2rem;">CLASS</p><p style="font-weight:600;">${s.class}</p></div>
+      <div><p style="font-size:.72rem;color:var(--gray-400);margin-bottom:.2rem;">STATUS</p><span class="badge ${s.status==='active'?'badge-green':'badge-orange'}">${s.status}</span></div>
+      <div><p style="font-size:.72rem;color:var(--gray-400);margin-bottom:.2rem;">EMAIL</p><p style="font-weight:500;">${s.email}</p></div>
+      <div><p style="font-size:.72rem;color:var(--gray-400);margin-bottom:.2rem;">PHONE</p><p style="font-weight:500;">${s.phone}</p></div>
+    </div>`;
+  openModal('viewStudentModal');
+}
+
+renderRows(students);
+</script>
+</body></html>

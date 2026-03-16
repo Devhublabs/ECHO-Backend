@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Register your school on Echo and get started in minutes.">
+    <title>School Registration — Echo</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .form-wrap { max-width: 620px; margin: 0 auto; }
+        .form-section { background: white; border-radius: var(--radius-md); border: 1px solid var(--gray-300); padding: 1.75rem; margin-bottom: 1.25rem; }
+        .form-section h3 { font-size: 0.95rem; color: var(--echo-blue); font-weight: 700; margin-bottom: 1.25rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--gray-100); display: flex; align-items: center; gap: 0.5rem; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .form-group { margin-bottom: 1rem; }
+        .form-group:last-child { margin-bottom: 0; }
+        .form-group label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--gray-700); margin-bottom: 0.35rem; }
+        .form-group input, .form-group select { width: 100%; padding: 0.7rem 0.9rem; border: 1.5px solid var(--gray-300); border-radius: var(--radius-sm); font-family: 'Inter', sans-serif; font-size: 0.88rem; color: var(--gray-900); outline: none; transition: border-color 0.2s, box-shadow 0.2s; appearance: none; }
+        .form-group input:focus, .form-group select:focus { border-color: var(--echo-blue); box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
+        .required::after { content: " *"; color: var(--echo-red); }
+        @media (max-width: 540px) { .form-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="../../home.html" class="logo">ECHO</a>
+            <a href="../../get-started.html" class="btn btn-ghost"><i class="fas fa-arrow-left"></i> Change Role</a>
+        </div>
+    </nav>
+
+    <section class="section">
+        <div class="container form-wrap">
+            <div class="text-center" style="margin-bottom: 1.75rem;">
+                <div class="role-badge"><i class="fas fa-user-shield"></i> School Admin Registration</div>
+                <h2 style="margin-top: 0.75rem; font-size: 1.5rem;">Register your school on Echo</h2>
+                <p style="color: var(--gray-500); font-size: 0.88rem; margin-top: 0.35rem;">Set up your school in minutes and start managing everything in one place.</p>
+            </div>
+
+            <form id="adminRegForm">
+                <!-- Admin Account -->
+                <div class="form-section">
+                    <h3><i class="fas fa-user-shield"></i> Your Account</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="required">First Name</label>
+                            <input type="text" placeholder="e.g. Emeka" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="required">Last Name</label>
+                            <input type="text" placeholder="e.g. Okafor" required>
+                        </div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="required">Email Address</label>
+                            <input type="email" placeholder="admin@yourschool.edu.ng" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="required">Phone Number</label>
+                            <input type="tel" placeholder="08012345678" required>
+                        </div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="required">Password</label>
+                            <input type="password" id="password" placeholder="Minimum 8 characters" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="required">Confirm Password</label>
+                            <input type="password" id="confirmPassword" placeholder="Repeat password" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- School Info -->
+                <div class="form-section">
+                    <h3><i class="fas fa-school"></i> School Information</h3>
+                    <div class="form-group">
+                        <label class="required">School Name</label>
+                        <input type="text" placeholder="e.g. Greenwood High School" required>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="required">School Type</label>
+                            <select required>
+                                <option value="">Select type</option>
+                                <option>Primary School</option>
+                                <option>Junior Secondary</option>
+                                <option>Senior Secondary</option>
+                                <option>Combined (Primary + Secondary)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="required">State</label>
+                            <input type="text" placeholder="e.g. Rivers State" required>
+                        </div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="required">City / LGA</label>
+                            <input type="text" placeholder="e.g. Port Harcourt" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="required">Address</label>
+                            <input type="text" placeholder="Street address" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display:flex;align-items:flex-start;gap:.75rem;margin-bottom:1.25rem;">
+                    <input type="checkbox" id="terms" required style="width:auto;margin-top:3px;flex-shrink:0;">
+                    <label for="terms" style="font-size:0.85rem;color:var(--gray-700);cursor:pointer;line-height:1.5;">
+                        I agree to Echo's <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>. <span style="color:var(--echo-red);">*</span>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width:100%;padding:.8rem;font-size:.95rem;" id="regBtn">
+                    <i class="fas fa-school"></i> Register School
+                </button>
+                <p style="text-align:center;margin-top:1rem;font-size:0.85rem;color:var(--gray-500);">
+                    Already have an account? <a href="../../login.html">Login here</a>
+                </p>
+            </form>
+        </div>
+    </section>
+
+    <script>
+    document.getElementById('adminRegForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const pw = document.getElementById('password').value;
+        const cpw = document.getElementById('confirmPassword').value;
+        if (pw !== cpw) { alert('Passwords do not match.'); return; }
+        if (pw.length < 8) { alert('Password must be at least 8 characters.'); return; }
+        const btn = document.getElementById('regBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Setting up your school...';
+        setTimeout(() => {
+            window.location.href = '../../dashboards/admin/dashboard.html';
+        }, 900);
+    });
+    </script>
+</body>
+</html>

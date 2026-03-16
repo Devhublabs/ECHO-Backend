@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Attendance — Echo</title>
+<link rel="stylesheet" href="../../css/layout.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+.cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; }
+.cal-day-label { text-align:center; font-size:.68rem; font-weight:700; color:var(--gray-400); padding:.35rem 0; }
+.cal-day { aspect-ratio:1; display:flex; align-items:center; justify-content:center; border-radius:8px; font-size:.78rem; font-weight:600; cursor:default; position:relative; }
+.cal-day.present { background:rgba(16,185,129,.12); color:#065f46; }
+.cal-day.absent  { background:rgba(239,68,68,.12);  color:#991b1b; }
+.cal-day.late    { background:rgba(245,158,11,.12); color:#92400e; }
+.cal-day.today   { outline:2px solid var(--echo-blue); }
+.cal-day.empty   { opacity:0; pointer-events:none; }
+</style>
+</head>
+<body>
+<div class="shell">
+<aside class="sidebar">
+  <div class="sidebar-brand"><div class="brand-mark">E</div><span class="brand-name">Echo</span></div>
+  <nav class="sidebar-nav">
+    <div class="nav-label">My Learning</div>
+    <a href="dashboard.html" class="nav-link"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="grades.html" class="nav-link"><i class="fas fa-chart-bar"></i> My Grades</a>
+    <a href="assignments.html" class="nav-link"><i class="fas fa-tasks"></i> Assignments</a>
+    <a href="attendance.html" class="nav-link active"><i class="fas fa-calendar-check"></i> Attendance</a>
+    <div class="nav-label">School</div>
+    <a href="notifications.html" class="nav-link"><i class="fas fa-bell"></i> Notifications</a>
+    <a href="materials.html" class="nav-link"><i class="fas fa-book"></i> Materials</a>
+    <div class="nav-label">Account</div>
+    <a href="#" class="nav-link" data-logout><i class="fas fa-sign-out-alt"></i> Logout</a>
+  </nav>
+  <div class="sidebar-user"><div class="sidebar-user-inner"><div class="user-avatar-sm">ST</div><div class="user-info-sm"><p>Student</p><span>SS2A</span></div></div></div>
+</aside>
+<div class="sidebar-overlay"></div>
+
+<div class="main">
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="topbar-btn hamburger"><i class="fas fa-bars"></i></button>
+      <div><h1>My Attendance</h1><p id="live-time"></p></div>
+    </div>
+    <div class="topbar-right">
+      <button class="topbar-btn"><i class="fas fa-bell"></i></button>
+      <div class="topbar-avatar">ST</div>
+    </div>
+  </header>
+
+  <div class="page-body">
+    <!-- Stats -->
+    <div class="stats-row" style="grid-template-columns:repeat(4,1fr);">
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon green"><i class="fas fa-check-circle"></i></div></div><div class="stat-val">46</div><div class="stat-lbl">Days Present</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon red"><i class="fas fa-times-circle"></i></div></div><div class="stat-val">3</div><div class="stat-lbl">Days Absent</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon orange"><i class="fas fa-clock"></i></div></div><div class="stat-val">1</div><div class="stat-lbl">Days Late</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon blue"><i class="fas fa-percentage"></i></div></div><div class="stat-val">92%</div><div class="stat-lbl">Rate This Term</div></div>
+    </div>
+
+    <!-- Progress bar -->
+    <div class="section-card" style="margin-bottom:1.25rem;">
+      <div class="section-body">
+        <div style="display:flex;justify-content:space-between;margin-bottom:.5rem;">
+          <span style="font-size:.82rem;font-weight:600;">Attendance Rate — First Term 2025/2026</span>
+          <span style="font-size:.82rem;font-weight:700;color:var(--echo-green);">92%</span>
+        </div>
+        <div class="prog-bar" style="height:10px;">
+          <div class="prog-fill" style="width:92%;background:var(--echo-green);"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:.35rem;font-size:.72rem;color:var(--gray-400);">
+          <span>46 present out of 50 school days</span>
+          <span>Minimum required: 75%</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;">
+      <!-- Calendar -->
+      <div class="section-card">
+        <div class="section-head">
+          <h2>March 2026</h2>
+          <div style="display:flex;gap:.5rem;align-items:center;font-size:.72rem;">
+            <span style="display:inline-flex;align-items:center;gap:.3rem;"><span style="width:10px;height:10px;border-radius:3px;background:rgba(16,185,129,.2);display:inline-block;"></span>Present</span>
+            <span style="display:inline-flex;align-items:center;gap:.3rem;"><span style="width:10px;height:10px;border-radius:3px;background:rgba(239,68,68,.2);display:inline-block;"></span>Absent</span>
+            <span style="display:inline-flex;align-items:center;gap:.3rem;"><span style="width:10px;height:10px;border-radius:3px;background:rgba(245,158,11,.2);display:inline-block;"></span>Late</span>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="cal-grid" id="calendar"></div>
+        </div>
+      </div>
+
+      <!-- Recent records -->
+      <div class="section-card">
+        <div class="section-head"><h2>Recent Records</h2></div>
+        <table class="echo-table">
+          <thead><tr><th>Date</th><th>Status</th><th>Subject</th></tr></thead>
+          <tbody>
+            <tr><td>Mar 15, 2026</td><td><span class="badge badge-orange">Late</span></td><td>Mathematics</td></tr>
+            <tr><td>Mar 14, 2026</td><td><span class="badge badge-green">Present</span></td><td>All Classes</td></tr>
+            <tr><td>Mar 13, 2026</td><td><span class="badge badge-green">Present</span></td><td>All Classes</td></tr>
+            <tr><td>Mar 12, 2026</td><td><span class="badge badge-green">Present</span></td><td>All Classes</td></tr>
+            <tr><td>Mar 11, 2026</td><td><span class="badge badge-red">Absent</span></td><td>All Classes</td></tr>
+            <tr><td>Mar 10, 2026</td><td><span class="badge badge-green">Present</span></td><td>All Classes</td></tr>
+            <tr><td>Mar 7, 2026</td><td><span class="badge badge-green">Present</span></td><td>All Classes</td></tr>
+            <tr><td>Mar 6, 2026</td><td><span class="badge badge-red">Absent</span></td><td>All Classes</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script src="../../js/utils.js"></script>
+<script>
+// Build March 2026 calendar
+const cal = document.getElementById('calendar');
+const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+days.forEach(d => { const el = document.createElement('div'); el.className = 'cal-day-label'; el.textContent = d; cal.appendChild(el); });
+
+// March 2026 starts on Sunday (0)
+const statuses = {1:'present',2:'present',3:'present',4:'present',5:'present',6:'absent',9:'present',10:'present',11:'absent',12:'present',13:'present',14:'present',15:'late',16:'today'};
+for (let i = 0; i < 31; i++) {
+  const el = document.createElement('div');
+  const day = i + 1;
+  const s = statuses[day];
+  el.className = `cal-day ${s || (day <= 16 ? 'present' : '')}`;
+  el.textContent = day;
+  cal.appendChild(el);
+}
+</script>
+</body></html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profile — Echo</title>
+<link rel="stylesheet" href="../../css/layout.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<div class="shell">
+<aside class="sidebar">
+  <div class="sidebar-brand"><div class="brand-mark">E</div><span class="brand-name">Echo</span></div>
+  <nav class="sidebar-nav">
+    <div class="nav-label">Navigation</div>
+    <a href="dashboard.html" class="nav-link"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="enter-grades.html" class="nav-link"><i class="fas fa-graduation-cap"></i> Enter Grades</a>
+    <a href="grades.html" class="nav-link"><i class="fas fa-chart-bar"></i> View Grades</a>
+    <a href="attendance.html" class="nav-link"><i class="fas fa-calendar-check"></i> Mark Attendance</a>
+    <div class="nav-label">Classes</div>
+    <a href="classes.html" class="nav-link"><i class="fas fa-users"></i> My Classes</a>
+    <a href="assignments.html" class="nav-link"><i class="fas fa-tasks"></i> Assignments</a>
+    <a href="materials.html" class="nav-link"><i class="fas fa-folder"></i> Materials</a>
+    <div class="nav-label">Account</div>
+    <a href="profile.html" class="nav-link active"><i class="fas fa-user"></i> Profile</a>
+    <a href="#" class="nav-link" data-logout><i class="fas fa-sign-out-alt"></i> Logout</a>
+  </nav>
+  <div class="sidebar-user"><div class="sidebar-user-inner"><div class="user-avatar-sm" id="sidebarInitials">--</div><div class="user-info-sm"><p id="sidebarName">User</p><span>Teacher</span></div></div></div>
+</aside>
+<div class="sidebar-overlay"></div>
+<div class="main">
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="topbar-btn hamburger"><i class="fas fa-bars"></i></button>
+      <div><h1>My Profile</h1><p id="live-time"></p></div>
+    </div>
+    <div class="topbar-right">
+      <button class="topbar-btn"><i class="fas fa-bell"></i></button>
+      <div class="topbar-avatar" id="topbarInitials">--</div>
+    </div>
+  </header>
+
+  <div class="page-body">
+    <div style="display:grid;grid-template-columns:280px 1fr;gap:1.25rem;align-items:start;">
+
+      <!-- Profile card -->
+      <div class="section-card" style="text-align:center;">
+        <div class="section-body">
+          <div id="profileAvatar" style="width:80px;height:80px;border-radius:50%;background:var(--echo-blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.75rem;font-weight:800;margin:0 auto 1rem;">--</div>
+          <p id="profileName" style="font-weight:800;font-size:1rem;margin-bottom:.25rem;">Loading...</p>
+          <p style="font-size:.78rem;color:var(--gray-500);margin-bottom:1rem;">Teacher • Mathematics Dept.</p>
+          <button class="btn btn-ghost btn-full btn-sm" onclick="document.getElementById('avatarInput').click()"><i class="fas fa-camera"></i> Change Photo</button>
+          <input type="file" id="avatarInput" style="display:none;" accept="image/*">
+        </div>
+      </div>
+
+      <!-- Edit form -->
+      <div class="section-card">
+        <div class="section-head"><h2>Account Information</h2></div>
+        <div class="section-body">
+          <form id="profileForm">
+            <div class="form-row">
+              <div class="field"><label>First Name</label><input type="text" id="pfFirstName" required></div>
+              <div class="field"><label>Last Name</label><input type="text" id="pfLastName" required></div>
+            </div>
+            <div class="form-row">
+              <div class="field"><label>Email Address</label><input type="email" id="pfEmail"></div>
+              <div class="field"><label>Phone Number</label><input type="tel" id="pfPhone" placeholder="08012345678"></div>
+            </div>
+            <div style="display:flex;justify-content:flex-end;gap:.65rem;margin-top:.5rem;">
+              <button type="submit" class="btn btn-primary" id="saveProfileBtn" data-label="Save Changes"><i class="fas fa-save"></i> Save Changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Change Password -->
+    <div class="section-card" style="margin-top:1.25rem;max-width:560px;">
+      <div class="section-head"><h2>Change Password</h2></div>
+      <div class="section-body">
+        <form id="pwForm">
+          <div class="field"><label>Current Password</label><input type="password" id="currentPw" placeholder="Enter current password"></div>
+          <div class="form-row">
+            <div class="field"><label>New Password</label><input type="password" id="newPw" placeholder="Minimum 8 characters"></div>
+            <div class="field"><label>Confirm New Password</label><input type="password" id="confirmPw" placeholder="Repeat new password"></div>
+          </div>
+          <div style="display:flex;justify-content:flex-end;margin-top:.5rem;">
+            <button type="submit" class="btn btn-primary" data-label="Update Password"><i class="fas fa-lock"></i> Update Password</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script src="../../js/utils.js"></script>
+<script>
+const user = JSON.parse(localStorage.getItem('echo_user') || '{}');
+const firstName = user.first_name || 'Teacher';
+const lastName  = user.last_name  || '';
+const name = [firstName, lastName].filter(Boolean).join(' ');
+const initials = name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase() || '--';
+
+document.getElementById('sidebarName').textContent = name;
+document.getElementById('sidebarInitials').textContent = initials;
+document.getElementById('topbarInitials').textContent = initials;
+document.getElementById('profileName').textContent = name;
+document.getElementById('profileAvatar').textContent = initials;
+document.getElementById('pfFirstName').value = firstName;
+document.getElementById('pfLastName').value = lastName;
+document.getElementById('pfEmail').value = user.email || '';
+document.getElementById('pfPhone').value = user.phone || '';
+
+handleForm('profileForm', 'Profile updated successfully!', null);
+
+document.getElementById('pwForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const np = document.getElementById('newPw').value;
+  const cp = document.getElementById('confirmPw').value;
+  if (np !== cp) { toast('New passwords do not match.', 'error'); return; }
+  if (np.length < 8) { toast('Password must be at least 8 characters.', 'error'); return; }
+  const btn = this.querySelector('[type="submit"]');
+  btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+  setTimeout(() => { toast('Password updated successfully!', 'success'); this.reset(); btn.disabled = false; btn.innerHTML = '<i class="fas fa-lock"></i> Update Password'; }, 900);
+});
+</script>
+</body></html>

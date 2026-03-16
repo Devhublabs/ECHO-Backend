@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Approve Registrations — Echo</title>
+<link rel="stylesheet" href="../../css/layout.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<div class="shell">
+<aside class="sidebar">
+  <div class="sidebar-brand"><div class="brand-mark">E</div><span class="brand-name">Echo</span></div>
+  <nav class="sidebar-nav">
+    <div class="nav-label">Main</div>
+    <a href="dashboard.html" class="nav-link"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="registrations.html" class="nav-link active"><i class="fas fa-user-check"></i> Approve Registrations</a>
+    <div class="nav-label">Manage</div>
+    <a href="#" class="nav-link" onclick="openModal('addTeacherModal');return false;"><i class="fas fa-chalkboard-teacher"></i> Add Teacher</a>
+    <a href="#" class="nav-link" onclick="openModal('addClassModal');return false;"><i class="fas fa-layer-group"></i> Create Class</a>
+    <a href="#" class="nav-link" onclick="openModal('addSubjectModal');return false;"><i class="fas fa-book"></i> Create Subject</a>
+    <div class="nav-label">Account</div>
+    <a href="subscription.html" class="nav-link"><i class="fas fa-credit-card"></i> Subscription</a>
+    <a href="#" class="nav-link" data-logout><i class="fas fa-sign-out-alt"></i> Logout</a>
+  </nav>
+  <div class="sidebar-user"><div class="sidebar-user-inner"><div class="user-avatar-sm">AD</div><div class="user-info-sm"><p>Admin</p><span>School Administrator</span></div></div></div>
+</aside>
+<div class="sidebar-overlay"></div>
+
+<div class="main">
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="topbar-btn hamburger"><i class="fas fa-bars"></i></button>
+      <div><h1>Approve Registrations</h1><p id="live-time"></p></div>
+    </div>
+    <div class="topbar-right">
+      <button class="topbar-btn"><i class="fas fa-bell"></i><span class="notif-dot"></span></button>
+      <div class="topbar-avatar">AD</div>
+    </div>
+  </header>
+
+  <div class="page-body">
+    <!-- Filters -->
+    <div style="display:flex;gap:.75rem;margin-bottom:1.25rem;flex-wrap:wrap;align-items:center;">
+      <div style="display:flex;gap:.4rem;">
+        <button class="btn btn-primary btn-sm" onclick="filterTab(this,'pending')" id="tab-pending">Pending <span style="background:rgba(255,255,255,.25);padding:1px 6px;border-radius:99px;font-size:.7rem;margin-left:.25rem;" id="cnt-pending">5</span></button>
+        <button class="btn btn-ghost btn-sm" onclick="filterTab(this,'approved')" id="tab-approved">Approved</button>
+        <button class="btn btn-ghost btn-sm" onclick="filterTab(this,'rejected')" id="tab-rejected">Rejected</button>
+      </div>
+      <div style="margin-left:auto;display:flex;gap:.5rem;">
+        <select class="btn btn-ghost btn-sm" style="cursor:pointer;" onchange="filterRole(this.value)">
+          <option value="all">All Roles</option>
+          <option value="teacher">Teachers</option>
+          <option value="student">Students</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Registrations List -->
+    <div class="section-card">
+      <div class="section-head"><h2>Pending Registrations</h2><span id="reg-count" style="font-size:.78rem;color:var(--gray-500);">5 requests</span></div>
+      <div id="regList">
+        <!-- Teacher Reg -->
+        <div class="reg-item" data-status="pending" data-role="teacher" style="display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;border-bottom:1px solid var(--gray-100);">
+          <div class="avatar" style="background:var(--echo-blue);color:#fff;width:40px;height:40px;font-size:.85rem;flex-shrink:0;">AI</div>
+          <div style="flex:1;">
+            <div style="font-weight:600;font-size:.88rem;">Mr. Adamu Ibrahim</div>
+            <div style="font-size:.75rem;color:var(--gray-500);">Teacher • Mathematics • adamu.ibrahim@school.ng</div>
+            <div style="font-size:.72rem;color:var(--gray-400);margin-top:.2rem;">Registered 2 hours ago</div>
+          </div>
+          <span class="badge badge-orange">Pending</span>
+          <div style="display:flex;gap:.4rem;">
+            <button class="btn btn-success btn-sm" onclick="approveReg(this)"><i class="fas fa-check"></i> Approve</button>
+            <button class="btn btn-danger btn-sm" onclick="rejectReg(this)"><i class="fas fa-times"></i> Reject</button>
+          </div>
+        </div>
+
+        <div class="reg-item" data-status="pending" data-role="student" style="display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;border-bottom:1px solid var(--gray-100);">
+          <div class="avatar" style="background:var(--echo-green);color:#fff;width:40px;height:40px;font-size:.85rem;flex-shrink:0;">CO</div>
+          <div style="flex:1;">
+            <div style="font-weight:600;font-size:.88rem;">Chiamaka Okeke</div>
+            <div style="font-size:.75rem;color:var(--gray-500);">Student • JSS2A • chiamaka.okeke@email.com</div>
+            <div style="font-size:.72rem;color:var(--gray-400);margin-top:.2rem;">Registered 5 hours ago</div>
+          </div>
+          <span class="badge badge-orange">Pending</span>
+          <div style="display:flex;gap:.4rem;">
+            <button class="btn btn-success btn-sm" onclick="approveReg(this)"><i class="fas fa-check"></i> Approve</button>
+            <button class="btn btn-danger btn-sm" onclick="rejectReg(this)"><i class="fas fa-times"></i> Reject</button>
+          </div>
+        </div>
+
+        <div class="reg-item" data-status="pending" data-role="teacher" style="display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;border-bottom:1px solid var(--gray-100);">
+          <div class="avatar" style="background:var(--echo-purple);color:#fff;width:40px;height:40px;font-size:.85rem;flex-shrink:0;">NS</div>
+          <div style="flex:1;">
+            <div style="font-weight:600;font-size:.88rem;">Mrs. Ngozi Sule</div>
+            <div style="font-size:.75rem;color:var(--gray-500);">Teacher • English Language • ngozi.sule@school.ng</div>
+            <div style="font-size:.72rem;color:var(--gray-400);margin-top:.2rem;">Registered 1 day ago</div>
+          </div>
+          <span class="badge badge-orange">Pending</span>
+          <div style="display:flex;gap:.4rem;">
+            <button class="btn btn-success btn-sm" onclick="approveReg(this)"><i class="fas fa-check"></i> Approve</button>
+            <button class="btn btn-danger btn-sm" onclick="rejectReg(this)"><i class="fas fa-times"></i> Reject</button>
+          </div>
+        </div>
+
+        <div class="reg-item" data-status="pending" data-role="student" style="display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;border-bottom:1px solid var(--gray-100);">
+          <div class="avatar" style="background:var(--echo-orange);color:#fff;width:40px;height:40px;font-size:.85rem;flex-shrink:0;">EK</div>
+          <div style="flex:1;">
+            <div style="font-weight:600;font-size:.88rem;">Emeka Kalu</div>
+            <div style="font-size:.75rem;color:var(--gray-500);">Student • SS1B • emeka.kalu@email.com</div>
+            <div style="font-size:.72rem;color:var(--gray-400);margin-top:.2rem;">Registered 2 days ago</div>
+          </div>
+          <span class="badge badge-orange">Pending</span>
+          <div style="display:flex;gap:.4rem;">
+            <button class="btn btn-success btn-sm" onclick="approveReg(this)"><i class="fas fa-check"></i> Approve</button>
+            <button class="btn btn-danger btn-sm" onclick="rejectReg(this)"><i class="fas fa-times"></i> Reject</button>
+          </div>
+        </div>
+
+        <div class="reg-item" data-status="pending" data-role="student" style="display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;">
+          <div class="avatar" style="background:var(--echo-red);color:#fff;width:40px;height:40px;font-size:.85rem;flex-shrink:0;">AB</div>
+          <div style="flex:1;">
+            <div style="font-weight:600;font-size:.88rem;">Amina Bello</div>
+            <div style="font-size:.75rem;color:var(--gray-500);">Student • JSS3A • amina.bello@email.com</div>
+            <div style="font-size:.72rem;color:var(--gray-400);margin-top:.2rem;">Registered 3 days ago</div>
+          </div>
+          <span class="badge badge-orange">Pending</span>
+          <div style="display:flex;gap:.4rem;">
+            <button class="btn btn-success btn-sm" onclick="approveReg(this)"><i class="fas fa-check"></i> Approve</button>
+            <button class="btn btn-danger btn-sm" onclick="rejectReg(this)"><i class="fas fa-times"></i> Reject</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script src="../../js/utils.js"></script>
+<script>
+let currentTab = 'pending';
+let currentRole = 'all';
+
+function filterTab(btn, status) {
+  currentTab = status;
+  document.querySelectorAll('[id^="tab-"]').forEach(b => b.className = 'btn btn-ghost btn-sm');
+  btn.className = 'btn btn-primary btn-sm';
+  renderList();
+}
+
+function filterRole(role) { currentRole = role; renderList(); }
+
+function renderList() {
+  document.querySelectorAll('.reg-item').forEach(item => {
+    const matchStatus = currentTab === 'all' || item.dataset.status === currentTab;
+    const matchRole = currentRole === 'all' || item.dataset.role === currentRole;
+    item.style.display = matchStatus && matchRole ? 'flex' : 'none';
+  });
+  const visible = [...document.querySelectorAll('.reg-item')].filter(i => i.style.display !== 'none');
+  document.getElementById('reg-count').textContent = `${visible.length} request${visible.length !== 1 ? 's' : ''}`;
+}
+
+function approveReg(btn) {
+  const item = btn.closest('.reg-item');
+  const name = item.querySelector('[style*="font-weight:600"]').textContent;
+  item.dataset.status = 'approved';
+  item.querySelector('.badge').className = 'badge badge-green';
+  item.querySelector('.badge').textContent = 'Approved';
+  item.querySelectorAll('.btn-success,.btn-danger').forEach(b => b.remove());
+  updateCounts();
+  toast(`${name} approved successfully!`, 'success');
+}
+
+function rejectReg(btn) {
+  const item = btn.closest('.reg-item');
+  const name = item.querySelector('[style*="font-weight:600"]').textContent;
+  item.dataset.status = 'rejected';
+  item.querySelector('.badge').className = 'badge badge-red';
+  item.querySelector('.badge').textContent = 'Rejected';
+  item.querySelectorAll('.btn-success,.btn-danger').forEach(b => b.remove());
+  updateCounts();
+  toast(`${name} registration rejected.`, 'error');
+}
+
+function updateCounts() {
+  const pending = [...document.querySelectorAll('.reg-item')].filter(i => i.dataset.status === 'pending').length;
+  document.getElementById('cnt-pending').textContent = pending;
+}
+</script>
+</body></html>

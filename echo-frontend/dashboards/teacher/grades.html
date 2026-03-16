@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>View Grades — Echo</title>
+<link rel="stylesheet" href="../../css/layout.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<div class="shell">
+<aside class="sidebar">
+  <div class="sidebar-brand"><div class="brand-mark">E</div><span class="brand-name">Echo</span></div>
+  <nav class="sidebar-nav">
+    <div class="nav-label">Teaching</div>
+    <a href="dashboard.html" class="nav-link"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="enter-grades.html" class="nav-link"><i class="fas fa-graduation-cap"></i> Enter Grades</a>
+    <a href="grades.html" class="nav-link active"><i class="fas fa-chart-bar"></i> View Grades</a>
+    <a href="attendance.html" class="nav-link"><i class="fas fa-calendar-check"></i> Mark Attendance</a>
+    <div class="nav-label">Classes</div>
+    <a href="classes.html" class="nav-link"><i class="fas fa-users"></i> My Classes</a>
+    <a href="assignments.html" class="nav-link"><i class="fas fa-tasks"></i> Assignments</a>
+    <a href="materials.html" class="nav-link"><i class="fas fa-folder"></i> Materials</a>
+    <div class="nav-label">Account</div>
+    <a href="profile.html" class="nav-link"><i class="fas fa-user"></i> Profile</a>
+    <a href="#" class="nav-link" data-logout><i class="fas fa-sign-out-alt"></i> Logout</a>
+  </nav>
+  <div class="sidebar-user"><div class="sidebar-user-inner"><div class="user-avatar-sm">TC</div><div class="user-info-sm"><p>Teacher</p><span>Class Teacher</span></div></div></div>
+</aside>
+<div class="sidebar-overlay"></div>
+<div class="main">
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="topbar-btn hamburger"><i class="fas fa-bars"></i></button>
+      <div><h1>View Grades</h1><p id="live-time"></p></div>
+    </div>
+    <div class="topbar-right">
+      <button class="topbar-btn"><i class="fas fa-bell"></i></button>
+      <div class="topbar-avatar">TC</div>
+    </div>
+  </header>
+
+  <div class="page-body">
+    <!-- Filter bar -->
+    <div class="section-card" style="margin-bottom:1.25rem;">
+      <div class="section-body" style="display:flex;gap:1rem;flex-wrap:wrap;align-items:flex-end;">
+        <div class="field" style="margin:0;flex:1;min-width:140px;"><label>Class</label>
+          <select onchange="loadGrades()"><option>SS2A — Mathematics</option><option>SS2B — Mathematics</option><option>SS1A — Physics</option><option>SS3A — Adv. Math</option></select></div>
+        <div class="field" style="margin:0;flex:1;min-width:120px;"><label>Term</label>
+          <select><option>First Term</option><option>Second Term</option><option>Third Term</option></select></div>
+        <div class="field" style="margin:0;flex:1;min-width:120px;"><label>Exam Type</label>
+          <select><option>All</option><option>CA 1</option><option>CA 2</option><option>Mid-term</option><option>End of Term</option></select></div>
+      </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="stats-row" style="grid-template-columns:repeat(4,1fr);margin-bottom:1.25rem;">
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon blue"><i class="fas fa-users"></i></div></div><div class="stat-val">45</div><div class="stat-lbl">Students</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon green"><i class="fas fa-star"></i></div></div><div class="stat-val">82%</div><div class="stat-lbl">Class Average</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon orange"><i class="fas fa-arrow-down"></i></div></div><div class="stat-val">12</div><div class="stat-lbl">Below Average</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon purple"><i class="fas fa-trophy"></i></div></div><div class="stat-val">97%</div><div class="stat-lbl">Highest Score</div></div>
+    </div>
+
+    <div class="section-card">
+      <div class="section-head">
+        <h2>SS2A — Mathematics Grades</h2>
+        <div style="display:flex;gap:.5rem;">
+          <span id="gradeBadge" class="badge badge-green">Published</span>
+          <button class="btn btn-ghost btn-sm"><i class="fas fa-download"></i> Export</button>
+        </div>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="echo-table">
+          <thead><tr><th>#</th><th>Student</th><th>CA 1</th><th>CA 2</th><th>Mid-term</th><th>End of Term</th><th>Total</th><th>Grade</th></tr></thead>
+          <tbody id="gradesBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script src="../../js/utils.js"></script>
+<script>
+const names = ['Chiamaka Okeke','Emeka Kalu','Amina Bello','Tunde Adeyemi','Ngozi Eze','Bello Musa','Chisom Obi','Fatima Sule','Rotimi Babs','Aisha Umar'];
+function gradeLabel(score) {
+  if(score>=75) return {l:'A',c:'badge-green'};
+  if(score>=60) return {l:'B',c:'badge-blue'};
+  if(score>=50) return {l:'C',c:'badge-orange'};
+  if(score>=40) return {l:'D',c:'badge-orange'};
+  return {l:'F',c:'badge-red'};
+}
+function loadGrades() {
+  const rows = names.map((n,i) => {
+    const ca1=Math.floor(Math.random()*11+14), ca2=Math.floor(Math.random()*11+14),
+          mid=Math.floor(Math.random()*11+14), eot=Math.floor(Math.random()*21+40);
+    const total=ca1+ca2+mid+eot;
+    const g=gradeLabel(total);
+    return `<tr><td style="color:var(--gray-400);">${i+1}</td><td style="font-weight:600;">${n}</td>
+    <td>${ca1}/25</td><td>${ca2}/25</td><td>${mid}/25</td><td>${eot}/60</td>
+    <td style="font-weight:800;">${total}/100</td>
+    <td><span class="badge ${g.c}">${g.l}</span></td></tr>`;
+  }).join('');
+  document.getElementById('gradesBody').innerHTML = rows;
+}
+loadGrades();
+</script>
+</body></html>

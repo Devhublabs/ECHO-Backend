@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Grades — Echo</title>
+<link rel="stylesheet" href="../../css/layout.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+.grade-card { border:1px solid var(--gray-200); border-radius:var(--radius); padding:1.1rem; transition:box-shadow .2s; }
+.grade-card:hover { box-shadow:var(--shadow-md); }
+.grade-circle { width:52px; height:52px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.1rem; flex-shrink:0; }
+</style>
+</head>
+<body>
+<div class="shell">
+<aside class="sidebar">
+  <div class="sidebar-brand"><div class="brand-mark">E</div><span class="brand-name">Echo</span></div>
+  <nav class="sidebar-nav">
+    <div class="nav-label">My Learning</div>
+    <a href="dashboard.html" class="nav-link"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="grades.html" class="nav-link active"><i class="fas fa-chart-bar"></i> My Grades</a>
+    <a href="assignments.html" class="nav-link"><i class="fas fa-tasks"></i> Assignments</a>
+    <a href="attendance.html" class="nav-link"><i class="fas fa-calendar-check"></i> Attendance</a>
+    <div class="nav-label">School</div>
+    <a href="notifications.html" class="nav-link"><i class="fas fa-bell"></i> Notifications</a>
+    <a href="materials.html" class="nav-link"><i class="fas fa-book"></i> Materials</a>
+    <div class="nav-label">Account</div>
+    <a href="#" class="nav-link" data-logout><i class="fas fa-sign-out-alt"></i> Logout</a>
+  </nav>
+  <div class="sidebar-user"><div class="sidebar-user-inner"><div class="user-avatar-sm">ST</div><div class="user-info-sm"><p>Student</p><span>SS2A</span></div></div></div>
+</aside>
+<div class="sidebar-overlay"></div>
+
+<div class="main">
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="topbar-btn hamburger"><i class="fas fa-bars"></i></button>
+      <div><h1>My Grades</h1><p id="live-time"></p></div>
+    </div>
+    <div class="topbar-right">
+      <button class="topbar-btn"><i class="fas fa-bell"></i></button>
+      <div class="topbar-avatar">ST</div>
+      <select class="btn btn-ghost btn-sm" style="cursor:pointer;">
+        <option>First Term</option><option>Second Term</option><option>Third Term</option>
+      </select>
+    </div>
+  </header>
+
+  <div class="page-body">
+    <!-- Summary stats -->
+    <div class="stats-row" style="grid-template-columns:repeat(4,1fr);margin-bottom:1.25rem;">
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon green"><i class="fas fa-star"></i></div></div><div class="stat-val">74%</div><div class="stat-lbl">Overall Average</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon blue"><i class="fas fa-trophy"></i></div></div><div class="stat-val">91%</div><div class="stat-lbl">Highest Score</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon orange"><i class="fas fa-arrow-down"></i></div></div><div class="stat-val">55%</div><div class="stat-lbl">Lowest Score</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon purple"><i class="fas fa-book-open"></i></div></div><div class="stat-val">8</div><div class="stat-lbl">Subjects</div></div>
+    </div>
+
+    <!-- Overall progress -->
+    <div class="section-card" style="margin-bottom:1.25rem;">
+      <div class="section-head"><h2>Performance Overview — First Term 2025/2026</h2></div>
+      <div class="section-body" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.75rem;">
+        <div class="grade-card">
+          <div style="display:flex;align-items:center;gap:.85rem;">
+            <div class="grade-circle" style="background:rgba(16,185,129,.12);color:#065f46;">A</div>
+            <div><div style="font-weight:700;font-size:.88rem;">English Language</div><div style="font-size:.72rem;color:var(--gray-400);">Mrs. Okafor</div></div>
+          </div>
+          <div style="margin-top:.85rem;"><div style="display:flex;justify-content:space-between;font-size:.75rem;margin-bottom:.3rem;"><span>CA1: 45/50</span><span>CA2: 46/50</span><span style="font-weight:700;color:var(--echo-green);">91/100</span></div><div class="prog-bar"><div class="prog-fill" style="width:91%;background:var(--echo-green);"></div></div></div>
+        </div>
+        <div class="grade-card">
+          <div style="display:flex;align-items:center;gap:.85rem;">
+            <div class="grade-circle" style="background:rgba(16,185,129,.12);color:#065f46;">B</div>
+            <div><div style="font-weight:700;font-size:.88rem;">Mathematics</div><div style="font-size:.72rem;color:var(--gray-400);">Mr. Adebayo</div></div>
+          </div>
+          <div style="margin-top:.85rem;"><div style="display:flex;justify-content:space-between;font-size:.75rem;margin-bottom:.3rem;"><span>CA1: 38/50</span><span>CA2: 44/50</span><span style="font-weight:700;color:var(--echo-blue);">82/100</span></div><div class="prog-bar"><div class="prog-fill" style="width:82%;background:var(--echo-blue);"></div></div></div>
+        </div>
+        <div class="grade-card">
+          <div style="display:flex;align-items:center;gap:.85rem;">
+            <div class="grade-circle" style="background:rgba(16,185,129,.12);color:#065f46;">B</div>
+            <div><div style="font-weight:700;font-size:.88rem;">Biology</div><div style="font-size:.72rem;color:var(--gray-400);">Mrs. Adaeze</div></div>
+          </div>
+          <div style="margin-top:.85rem;"><div style="display:flex;justify-content:space-between;font-size:.75rem;margin-bottom:.3rem;"><span>CA1: 40/50</span><span>CA2: 38/50</span><span style="font-weight:700;color:var(--echo-blue);">78/100</span></div><div class="prog-bar"><div class="prog-fill" style="width:78%;background:var(--echo-blue);"></div></div></div>
+        </div>
+        <div class="grade-card">
+          <div style="display:flex;align-items:center;gap:.85rem;">
+            <div class="grade-circle" style="background:rgba(59,130,246,.12);color:#1d4ed8;">C</div>
+            <div><div style="font-weight:700;font-size:.88rem;">Physics</div><div style="font-size:.72rem;color:var(--gray-400);">Mr. Chinedu</div></div>
+          </div>
+          <div style="margin-top:.85rem;"><div style="display:flex;justify-content:space-between;font-size:.75rem;margin-bottom:.3rem;"><span>CA1: 32/50</span><span>CA2: 35/50</span><span style="font-weight:700;color:var(--echo-orange);">67/100</span></div><div class="prog-bar"><div class="prog-fill" style="width:67%;background:var(--echo-orange);"></div></div></div>
+        </div>
+        <div class="grade-card">
+          <div style="display:flex;align-items:center;gap:.85rem;">
+            <div class="grade-circle" style="background:rgba(59,130,246,.12);color:#1d4ed8;">C</div>
+            <div><div style="font-weight:700;font-size:.88rem;">Economics</div><div style="font-size:.72rem;color:var(--gray-400);">Mr. Eze</div></div>
+          </div>
+          <div style="margin-top:.85rem;"><div style="display:flex;justify-content:space-between;font-size:.75rem;margin-bottom:.3rem;"><span>CA1: 30/50</span><span>CA2: 33/50</span><span style="font-weight:700;color:var(--echo-orange);">63/100</span></div><div class="prog-bar"><div class="prog-fill" style="width:63%;background:var(--echo-orange);"></div></div></div>
+        </div>
+        <div class="grade-card">
+          <div style="display:flex;align-items:center;gap:.85rem;">
+            <div class="grade-circle" style="background:rgba(245,158,11,.12);color:#92400e;">D</div>
+            <div><div style="font-weight:700;font-size:.88rem;">Chemistry</div><div style="font-size:.72rem;color:var(--gray-400);">Mr. Obi</div></div>
+          </div>
+          <div style="margin-top:.85rem;"><div style="display:flex;justify-content:space-between;font-size:.75rem;margin-bottom:.3rem;"><span>CA1: 25/50</span><span>CA2: 30/50</span><span style="font-weight:700;color:var(--echo-orange);">55/100</span></div><div class="prog-bar"><div class="prog-fill" style="width:55%;background:var(--echo-orange);"></div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<script src="../../js/utils.js"></script>
+</body></html>

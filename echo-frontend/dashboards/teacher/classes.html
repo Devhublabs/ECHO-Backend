@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Classes — Echo</title>
+<link rel="stylesheet" href="../../css/layout.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<div class="shell">
+<aside class="sidebar">
+  <div class="sidebar-brand"><div class="brand-mark">E</div><span class="brand-name">Echo</span></div>
+  <nav class="sidebar-nav">
+    <div class="nav-label">Teaching</div>
+    <a href="dashboard.html" class="nav-link"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="enter-grades.html" class="nav-link"><i class="fas fa-graduation-cap"></i> Enter Grades</a>
+    <a href="grades.html" class="nav-link"><i class="fas fa-chart-bar"></i> View Grades</a>
+    <a href="attendance.html" class="nav-link"><i class="fas fa-calendar-check"></i> Mark Attendance</a>
+    <div class="nav-label">Classes</div>
+    <a href="classes.html" class="nav-link active"><i class="fas fa-users"></i> My Classes</a>
+    <a href="assignments.html" class="nav-link"><i class="fas fa-tasks"></i> Assignments</a>
+    <a href="materials.html" class="nav-link"><i class="fas fa-folder"></i> Materials</a>
+    <div class="nav-label">Account</div>
+    <a href="profile.html" class="nav-link"><i class="fas fa-user"></i> Profile</a>
+    <a href="#" class="nav-link" data-logout><i class="fas fa-sign-out-alt"></i> Logout</a>
+  </nav>
+  <div class="sidebar-user"><div class="sidebar-user-inner"><div class="user-avatar-sm">TC</div><div class="user-info-sm"><p>Teacher</p><span>Class Teacher</span></div></div></div>
+</aside>
+<div class="sidebar-overlay"></div>
+<div class="main">
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="topbar-btn hamburger"><i class="fas fa-bars"></i></button>
+      <div><h1>My Classes</h1><p id="live-time"></p></div>
+    </div>
+    <div class="topbar-right">
+      <button class="topbar-btn"><i class="fas fa-bell"></i></button>
+      <div class="topbar-avatar">TC</div>
+    </div>
+  </header>
+
+  <div class="page-body">
+    <div class="stats-row" style="grid-template-columns:repeat(4,1fr);margin-bottom:1.25rem;">
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon blue"><i class="fas fa-users"></i></div></div><div class="stat-val">4</div><div class="stat-lbl">Classes</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon green"><i class="fas fa-user-graduate"></i></div></div><div class="stat-val">155</div><div class="stat-lbl">Total Students</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon orange"><i class="fas fa-book"></i></div></div><div class="stat-val">3</div><div class="stat-lbl">Subjects</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon purple"><i class="fas fa-chart-line"></i></div></div><div class="stat-val">78%</div><div class="stat-lbl">Avg Performance</div></div>
+    </div>
+
+    <!-- Classes -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.25rem;">
+
+      <div class="section-card">
+        <div class="section-head"><h2>SS2A — Mathematics</h2><span class="badge badge-green">Active</span></div>
+        <div class="section-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1rem;">
+            <div style="text-align:center;padding:.6rem;background:var(--gray-50);border-radius:8px;"><div style="font-weight:800;font-size:1.2rem;">45</div><div style="font-size:.72rem;color:var(--gray-500);">Students</div></div>
+            <div style="text-align:center;padding:.6rem;background:var(--gray-50);border-radius:8px;"><div style="font-weight:800;font-size:1.2rem;">82%</div><div style="font-size:.72rem;color:var(--gray-500);">Avg Score</div></div>
+          </div>
+          <p style="font-size:.78rem;color:var(--gray-500);margin-bottom:.85rem;"><i class="fas fa-clock"></i> Mon, Wed, Fri &nbsp;•&nbsp; <i class="fas fa-book"></i> Mathematics</p>
+          <div style="display:flex;gap:.5rem;">
+            <button class="btn btn-primary btn-sm" style="flex:1;" onclick="openStudentList('SS2A')"><i class="fas fa-users"></i> Students</button>
+            <a href="enter-grades.html" class="btn btn-ghost btn-sm" style="flex:1;justify-content:center;"><i class="fas fa-graduation-cap"></i> Grades</a>
+            <a href="attendance.html" class="btn btn-ghost btn-sm" style="flex:1;justify-content:center;"><i class="fas fa-check"></i> Attend.</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-head"><h2>SS2B — Mathematics</h2><span class="badge badge-green">Active</span></div>
+        <div class="section-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1rem;">
+            <div style="text-align:center;padding:.6rem;background:var(--gray-50);border-radius:8px;"><div style="font-weight:800;font-size:1.2rem;">40</div><div style="font-size:.72rem;color:var(--gray-500);">Students</div></div>
+            <div style="text-align:center;padding:.6rem;background:var(--gray-50);border-radius:8px;"><div style="font-weight:800;font-size:1.2rem;">76%</div><div style="font-size:.72rem;color:var(--gray-500);">Avg Score</div></div>
+          </div>
+          <p style="font-size:.78rem;color:var(--gray-500);margin-bottom:.85rem;"><i class="fas fa-clock"></i> Tue, Thu &nbsp;•&nbsp; <i class="fas fa-book"></i> Mathematics</p>
+          <div style="display:flex;gap:.5rem;">
+            <button class="btn btn-primary btn-sm" style="flex:1;" onclick="openStudentList('SS2B')"><i class="fas fa-users"></i> Students</button>
+            <a href="enter-grades.html" class="btn btn-ghost btn-sm" style="flex:1;justify-content:center;"><i class="fas fa-graduation-cap"></i> Grades</a>
+            <a href="attendance.html" class="btn btn-ghost btn-sm" style="flex:1;justify-content:center;"><i class="fas fa-check"></i> Attend.</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-head"><h2>SS1A — Physics</h2><span class="badge badge-green">Active</span></div>
+        <div class="section-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1rem;">
+            <div style="text-align:center;padding:.6rem;background:var(--gray-50);border-radius:8px;"><div style="font-weight:800;font-size:1.2rem;">38</div><div style="font-size:.72rem;color:var(--gray-500);">Students</div></div>
+            <div style="text-align:center;padding:.6rem;background:var(--gray-50);border-radius:8px;"><div style="font-weight:800;font-size:1.2rem;">71%</div><div style="font-size:.72rem;color:var(--gray-500);">Avg Score</div></div>
+          </div>
+          <p style="font-size:.78rem;color:var(--gray-500);margin-bottom:.85rem;"><i class="fas fa-clock"></i> Mon, Thu &nbsp;•&nbsp; <i class="fas fa-book"></i> Physics</p>
+          <div style="display:flex;gap:.5rem;">
+            <button class="btn btn-primary btn-sm" style="flex:1;" onclick="openStudentList('SS1A')"><i class="fas fa-users"></i> Students</button>
+            <a href="enter-grades.html" class="btn btn-ghost btn-sm" style="flex:1;justify-content:center;"><i class="fas fa-graduation-cap"></i> Grades</a>
+            <a href="attendance.html" class="btn btn-ghost btn-sm" style="flex:1;justify-content:center;"><i class="fas fa-check"></i> Attend.</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-head"><h2>SS3A — Advanced Mathematics</h2><span class="badge badge-green">Active</span></div>
+        <div class="section-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1rem;">
+            <div style="text-align:center;padding:.6rem;background:var(--gray-50);border-radius:8px;"><div style="font-weight:800;font-size:1.2rem;">32</div><div style="font-size:.72rem;color:var(--gray-500);">Students</div></div>
+            <div style="text-align:center;padding:.6rem;background:var(--gray-50);border-radius:8px;"><div style="font-weight:800;font-size:1.2rem;">85%</div><div style="font-size:.72rem;color:var(--gray-500);">Avg Score</div></div>
+          </div>
+          <p style="font-size:.78rem;color:var(--gray-500);margin-bottom:.85rem;"><i class="fas fa-clock"></i> Tue, Fri &nbsp;•&nbsp; <i class="fas fa-book"></i> Advanced Math</p>
+          <div style="display:flex;gap:.5rem;">
+            <button class="btn btn-primary btn-sm" style="flex:1;" onclick="openStudentList('SS3A')"><i class="fas fa-users"></i> Students</button>
+            <a href="enter-grades.html" class="btn btn-ghost btn-sm" style="flex:1;justify-content:center;"><i class="fas fa-graduation-cap"></i> Grades</a>
+            <a href="attendance.html" class="btn btn-ghost btn-sm" style="flex:1;justify-content:center;"><i class="fas fa-check"></i> Attend.</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- Student List Modal -->
+<div class="modal-backdrop" id="studentListModal">
+  <div class="modal" style="max-width:580px;">
+    <div class="modal-head"><h3 id="studentListTitle">Students</h3><button class="modal-close" onclick="closeModal('studentListModal')"><i class="fas fa-times"></i></button></div>
+    <div class="modal-body" style="padding:0;">
+      <table class="echo-table" id="studentListTable">
+        <thead><tr><th>#</th><th>Name</th><th>Attendance</th><th>Avg Score</th></tr></thead>
+        <tbody id="studentListBody"></tbody>
+      </table>
+    </div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal('studentListModal')">Close</button></div>
+  </div>
+</div>
+
+<script src="../../js/utils.js"></script>
+<script>
+const classStudents = {
+  SS2A: ['Chiamaka Okeke','Emeka Kalu','Amina Bello','Tunde Adeyemi','Ngozi Eze','Bello Musa','Chisom Obi','Fatima Sule'],
+  SS2B: ['Aisha Umar','Rotimi Babs','Chinwe Nnadi','Danladi Yusuf','Funke Obi'],
+  SS1A: ['Seun Okonkwo','Halima Garba','Kayode Femi','Priscilla Udo','Ahmed Bello'],
+  SS3A: ['Tobi Adeleke','Zainab Idris','Chukwuemeka Obi','Maryam Lawal','Grace Eze']
+};
+function openStudentList(cls) {
+  document.getElementById('studentListTitle').textContent = `${cls} — Students`;
+  const list = classStudents[cls] || [];
+  document.getElementById('studentListBody').innerHTML = list.map((s,i) => {
+    const att = Math.floor(Math.random()*15+85);
+    const score = Math.floor(Math.random()*30+60);
+    return `<tr><td style="color:var(--gray-400);">${i+1}</td><td style="font-weight:600;">${s}</td>
+    <td><span class="badge ${att>=90?'badge-green':'badge-orange'}">${att}%</span></td>
+    <td style="font-weight:600;">${score}%</td></tr>`;
+  }).join('');
+  openModal('studentListModal');
+}
+</script>
+</body></html>

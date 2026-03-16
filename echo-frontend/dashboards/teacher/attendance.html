@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mark Attendance — Echo</title>
+<link rel="stylesheet" href="../../css/layout.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+.attend-row { display:flex; align-items:center; gap:1rem; padding:.85rem 1.25rem; border-bottom:1px solid var(--gray-100); transition:background .15s; }
+.attend-row:last-child { border-bottom:none; }
+.attend-row:hover { background:var(--gray-50); }
+.attend-toggle { display:flex; gap:.4rem; margin-left:auto; }
+.att-btn { padding:.35rem .85rem; border-radius:99px; border:1.5px solid var(--gray-300); background:transparent; font-size:.72rem; font-weight:700; cursor:pointer; transition:all .15s; font-family:inherit; }
+.att-btn.present { border-color:var(--echo-green); background:rgba(16,185,129,.1); color:#065f46; }
+.att-btn.absent  { border-color:var(--echo-red);   background:rgba(239,68,68,.1);  color:#991b1b; }
+.att-btn.late    { border-color:var(--echo-orange); background:rgba(245,158,11,.1); color:#92400e; }
+.summary-pill { display:inline-flex; align-items:center; gap:.3rem; padding:.3rem .75rem; border-radius:99px; font-size:.75rem; font-weight:700; }
+</style>
+</head>
+<body>
+<div class="shell">
+<aside class="sidebar">
+  <div class="sidebar-brand"><div class="brand-mark">E</div><span class="brand-name">Echo</span></div>
+  <nav class="sidebar-nav">
+    <div class="nav-label">Teaching</div>
+    <a href="dashboard.html" class="nav-link"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="enter-grades.html" class="nav-link"><i class="fas fa-graduation-cap"></i> Enter Grades</a>
+    <a href="attendance.html" class="nav-link active"><i class="fas fa-calendar-check"></i> Mark Attendance</a>
+    <div class="nav-label">Classes</div>
+    <a href="classes.html" class="nav-link"><i class="fas fa-users"></i> My Classes</a>
+    <a href="assignments.html" class="nav-link"><i class="fas fa-tasks"></i> Assignments</a>
+    <a href="materials.html" class="nav-link"><i class="fas fa-folder"></i> Materials</a>
+    <div class="nav-label">Account</div>
+    <a href="notifications.html" class="nav-link"><i class="fas fa-bell"></i> Notifications</a>
+    <a href="profile.html" class="nav-link"><i class="fas fa-user"></i> Profile</a>
+    <a href="#" class="nav-link" data-logout><i class="fas fa-sign-out-alt"></i> Logout</a>
+  </nav>
+  <div class="sidebar-user"><div class="sidebar-user-inner"><div class="user-avatar-sm">TC</div><div class="user-info-sm"><p>Teacher</p><span>Class Teacher</span></div></div></div>
+</aside>
+<div class="sidebar-overlay"></div>
+
+<div class="main">
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="topbar-btn hamburger"><i class="fas fa-bars"></i></button>
+      <div><h1>Mark Attendance</h1><p id="live-time"></p></div>
+    </div>
+    <div class="topbar-right">
+      <button class="topbar-btn"><i class="fas fa-bell"></i></button>
+      <div class="topbar-avatar">TC</div>
+    </div>
+  </header>
+
+  <div class="page-body">
+    <!-- Controls -->
+    <div class="section-card" style="margin-bottom:1.25rem;">
+      <div class="section-body" style="display:flex;gap:1rem;flex-wrap:wrap;align-items:flex-end;">
+        <div class="field" style="margin:0;flex:1;min-width:160px;">
+          <label>Class</label>
+          <select id="classSelect" onchange="loadClass()">
+            <option value="">Select class</option>
+            <option value="SS2A">SS2A — Mathematics</option>
+            <option value="SS2B">SS2B — Mathematics</option>
+            <option value="SS1A">SS1A — Physics</option>
+            <option value="SS3A">SS3A — Adv. Math</option>
+          </select>
+        </div>
+        <div class="field" style="margin:0;flex:1;min-width:160px;">
+          <label>Date</label>
+          <input type="date" id="attendDate" value="">
+        </div>
+        <div class="field" style="margin:0;">
+          <label>&nbsp;</label>
+          <div style="display:flex;gap:.5rem;">
+            <button class="btn btn-ghost btn-sm" onclick="markAll('present')"><i class="fas fa-check" style="color:var(--echo-green);"></i> All Present</button>
+            <button class="btn btn-ghost btn-sm" onclick="markAll('absent')"><i class="fas fa-times" style="color:var(--echo-red);"></i> All Absent</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary -->
+    <div id="summaryBar" style="display:none;margin-bottom:1rem;display:flex;gap:.65rem;flex-wrap:wrap;">
+      <span class="summary-pill" style="background:rgba(16,185,129,.1);color:#065f46;"><i class="fas fa-check-circle"></i> <span id="cnt-present">0</span> Present</span>
+      <span class="summary-pill" style="background:rgba(239,68,68,.1);color:#991b1b;"><i class="fas fa-times-circle"></i> <span id="cnt-absent">0</span> Absent</span>
+      <span class="summary-pill" style="background:rgba(245,158,11,.1);color:#92400e;"><i class="fas fa-clock"></i> <span id="cnt-late">0</span> Late</span>
+      <span class="summary-pill" style="background:var(--gray-100);color:var(--gray-500);"><i class="fas fa-minus-circle"></i> <span id="cnt-unmarked">0</span> Unmarked</span>
+    </div>
+
+    <!-- Attendance list -->
+    <div class="section-card">
+      <div class="section-head">
+        <h2 id="listTitle">Select a class to begin</h2>
+        <button class="btn btn-primary btn-sm" id="submitBtn" style="display:none;" onclick="submitAttendance()"><i class="fas fa-paper-plane"></i> Submit</button>
+      </div>
+      <div id="attendList">
+        <div class="empty-state"><i class="fas fa-calendar-check"></i><p>Select a class and date to start marking</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script src="../../js/utils.js"></script>
+<script>
+// Set today's date
+document.getElementById('attendDate').value = new Date().toISOString().split('T')[0];
+
+const students = {
+  'SS2A': ['Chiamaka Okeke','Emeka Kalu','Amina Bello','Tunde Adeyemi','Ngozi Eze','Bello Musa','Chisom Obi','Fatima Sule','John Ade','Mary Nwosu'],
+  'SS2B': ['Aisha Umar','Rotimi Babs','Chinwe Nnadi','Danladi Yusuf','Funke Obi'],
+  'SS1A': ['Seun Okonkwo','Halima Garba','Kayode Femi','Priscilla Udo','Ahmed Bello'],
+  'SS3A': ['Tobi Adeleke','Zainab Idris','Chukwuemeka Obi','Maryam Lawal','Grace Eze']
+};
+
+let attendance = {};
+
+function loadClass() {
+  const cls = document.getElementById('classSelect').value;
+  if (!cls) return;
+  const list = students[cls];
+  attendance = {};
+  list.forEach(s => attendance[s] = null);
+  document.getElementById('listTitle').textContent = `${cls} — ${list.length} Students`;
+  document.getElementById('submitBtn').style.display = 'flex';
+  document.getElementById('summaryBar').style.display = 'flex';
+  document.getElementById('attendList').innerHTML = list.map((s,i) => `
+    <div class="attend-row" id="row-${i}">
+      <div style="width:28px;text-align:center;font-size:.75rem;color:var(--gray-400);">${i+1}</div>
+      <div class="avatar" style="background:#${['3b82f6','10b981','f59e0b','8b5cf6','ef4444'][i%5]};color:#fff;">${s.split(' ').map(w=>w[0]).join('').slice(0,2)}</div>
+      <div style="flex:1;font-weight:600;font-size:.85rem;">${s}</div>
+      <div class="attend-toggle">
+        <button class="att-btn" onclick="mark('${s}',this,'present')">Present</button>
+        <button class="att-btn" onclick="mark('${s}',this,'absent')">Absent</button>
+        <button class="att-btn" onclick="mark('${s}',this,'late')">Late</button>
+      </div>
+    </div>`).join('');
+  updateCounts();
+}
+
+function mark(student, btn, status) {
+  attendance[student] = status;
+  const row = btn.closest('.attend-row');
+  row.querySelectorAll('.att-btn').forEach(b => b.className = 'att-btn');
+  btn.classList.add(status);
+  updateCounts();
+}
+
+function markAll(status) {
+  Object.keys(attendance).forEach(s => attendance[s] = status);
+  document.querySelectorAll('.attend-row').forEach(row => {
+    row.querySelectorAll('.att-btn').forEach(b => b.className = 'att-btn');
+    const target = [...row.querySelectorAll('.att-btn')].find(b => b.textContent.toLowerCase() === status);
+    if (target) target.classList.add(status);
+  });
+  updateCounts();
+}
+
+function updateCounts() {
+  const counts = {present:0,absent:0,late:0,unmarked:0};
+  Object.values(attendance).forEach(v => { counts[v || 'unmarked']++; });
+  document.getElementById('cnt-present').textContent = counts.present;
+  document.getElementById('cnt-absent').textContent = counts.absent;
+  document.getElementById('cnt-late').textContent = counts.late;
+  document.getElementById('cnt-unmarked').textContent = counts.unmarked;
+}
+
+function submitAttendance() {
+  const unmarked = Object.values(attendance).filter(v => !v).length;
+  if (unmarked > 0 && !confirm(`${unmarked} student(s) are still unmarked. Submit anyway?`)) return;
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+  setTimeout(() => { btn.disabled = false; btn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit'; toast('Attendance submitted successfully!', 'success'); }, 900);
+}
+</script>
+</body></html>
