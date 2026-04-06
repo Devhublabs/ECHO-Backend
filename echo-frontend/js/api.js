@@ -17,7 +17,10 @@ const Api = {
         const options = { method, headers };
         if (body) options.body = JSON.stringify(body);
 
-        const response = await fetch(`${API_BASE}${endpoint}`, options);
+        const url = `${API_BASE}${endpoint}`;
+        console.log('[API]', method, url);
+
+        const response = await fetch(url, options);
         const data = await response.json();
 
         // Handle token expiry globally
@@ -68,12 +71,11 @@ const Api = {
     // ──────────────────────────────────────
 
     // Owner: Create a new school and join it
-    createAndJoinSchool(schoolName, schoolType, country = 'Nigeria', state = '') {
+    createAndJoinSchool(userId, schoolName, schoolType) {
         return this.post('/create-and-join', {
+            user_id: userId,
             school_name: schoolName,
             school_type: schoolType,  // 'senior' | 'junior' | 'primary'
-            country,
-            state
         });
     },
 
@@ -93,8 +95,20 @@ const Api = {
     getSchools()                  { return this.get('/schools'); },
     getSchool(schoolId)           { return this.get(`/schools/${schoolId}`); },
     getSchoolStats(schoolId)      { return this.get(`/schools/${schoolId}/stats`); },
-    getSchoolTeachers(schoolId)   { return this.get(`/schools/${schoolId}/teachers`); },
-    getSchoolStudents(schoolId)   { return this.get(`/schools/${schoolId}/students`); },
+    async updateSchool(schoolId, data)  {
+        try {
+            return await this.put(`/schools/${schoolId}`, data);
+        } catch (err) {
+            // Some deployments enable strict trailing-slash routing.
+            // If backend expects `/schools/<id>/`, retry once to avoid 405s.
+            if (err?.status === 405) {
+                return await this.put(`/schools/${schoolId}/`, data);
+            }
+            throw err;
+        }
+    },
+    getSchoolTeachers(schoolId)   { return this.get(`/teachers?school_id=${encodeURIComponent(schoolId)}`); },
+    getSchoolStudents(schoolId)   { return this.get(`/students?school_id=${encodeURIComponent(schoolId)}`); },
 
     // ──────────────────────────────────────
     //  TEACHERS
@@ -139,9 +153,8 @@ const Api = {
     //  DASHBOARD
     // ──────────────────────────────────────
 
-    getDashboardStats()           { return this.get('/dashboard/stats'); },
-    getDashboardOverview()        { return this.get('/dashboard/overview'); },
-    getDashboardActivity()        { return this.get('/dashboard/activity'); },
+    getSchoolDashboardOverview(schoolId) { return this.get(`/dashboard/overview/${schoolId}`); },
+    getTeacherDashboard(teacherId)       { return this.get(`/dashboard/teacher/${teacherId}`); },
 
     // ──────────────────────────────────────
     //  HEALTH CHECK

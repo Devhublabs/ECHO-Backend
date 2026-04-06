@@ -121,19 +121,49 @@
         </div>
     </section>
 
+    <script src="../../js/api.js"></script>
     <script>
-    document.getElementById('teacherRegForm').addEventListener('submit', function(e) {
+    document.getElementById('teacherRegForm').addEventListener('submit', async function(e) {
         e.preventDefault();
+        const form = e.currentTarget;
+
+        const textInputs = form.querySelectorAll('.form-section:nth-of-type(1) input[type="text"]');
+        const first = textInputs?.[0]?.value?.trim();
+        const last  = textInputs?.[1]?.value?.trim();
+
+        const email = form.querySelector('.form-section:nth-of-type(1) input[type="email"]')?.value?.trim();
+        const registrationCode = form.querySelector('.form-section:nth-of-type(3) input[type="text"]')?.value?.trim();
+
         const pw = document.getElementById('password').value;
         const cpw = document.getElementById('confirmPassword').value;
+        if (!first || !last || !email || !pw || !cpw || !registrationCode) { alert('Please fill all required fields.'); return; }
         if (pw !== cpw) { alert('Passwords do not match.'); return; }
         if (pw.length < 8) { alert('Password must be at least 8 characters.'); return; }
         const btn = document.getElementById('regBtn');
+        const originalHtml = btn.innerHTML;
         btn.disabled = true;
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating account...';
-        setTimeout(() => {
+
+        try {
+            await Api.register(first, last, email, pw);
+
+            // Login immediately so we can attach token for joinSchool
+            const login = await Api.login(email, pw);
+            localStorage.setItem('echo_token', login.token || login.access_token);
+            localStorage.setItem('echo_role',  login.user?.role || 'teacher');
+            localStorage.setItem('echo_user',  JSON.stringify(login.user || {}));
+
+            const userId = login.user?.id || login.user?.user_id || login.user?.uuid;
+            if (userId && registrationCode) {
+                await Api.joinSchool(userId, registrationCode, 'teacher');
+            }
+
             window.location.href = '../../dashboards/teacher/dashboard.html';
-        }, 900);
+        } catch (err) {
+            alert(err?.message || err?.error || 'Registration failed. Please try again.');
+            btn.disabled = false;
+            btn.innerHTML = originalHtml;
+        }
     });
     </script>
 </body>
