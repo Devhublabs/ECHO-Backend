@@ -3,7 +3,7 @@ User Model for Echo Platform
 Handles authentication, role-based access, and school association
 """
 from datetime import datetime
-from app import db
+from extensions import db
 from sqlalchemy.orm import validates, relationship
 from sqlalchemy import Column, String, Boolean, DateTime, JSON
 import uuid

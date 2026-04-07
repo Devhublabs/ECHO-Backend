@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from app import db
+from extensions import db
 from models.school import School
 from models.user import User
 from models.student import Student
@@ -130,18 +130,23 @@ def get_school(school_id):
 @schools_bp.route('/<school_id>', methods=['PUT'])
 def update_school(school_id):
     """
-    Update school information
+    Update school information - FIXED for UUID and JSON handling
     """
-    school = School.query.get(school_id)
+    # Ensure we handle the ID as a string for UUID compatibility
+    school = School.query.filter_by(id=str(school_id)).first()
     
     if not school:
+        # Debug print to terminal so you can see what ID failed
+        print(f"❌ School Update Failed: School {school_id} not found in DB")
         return jsonify({'error': 'School not found'}), 404
     
     data = request.get_json()
+    if not data:
+        return jsonify({'error': 'No data provided'}), 400
     
     # Update basic fields
     updatable_fields = [
-        'motto', 'vision', 'mission',
+        'name', 'motto', 'vision', 'mission',
         'contact_email', 'contact_phone', 'contact_whatsapp',
         'website', 'address', 'city', 'state', 'country'
     ]
@@ -150,31 +155,27 @@ def update_school(school_id):
         if field in data:
             setattr(school, field, data[field])
     
-    # Update academic config
+    # Handle the specific setup fields
     if 'academic_config' in data:
-        school.update_academic_config(data['academic_config'])
+        school.academic_config = data['academic_config']
     
-    # Update operational details
-    if 'operational_details' in data:
-        for category, details in data['operational_details'].items():
-            school.add_operational_detail(category, details)
-    
-    # Update subscription config
-    if 'subscription_config' in data:
-        school.update_subscription_config(data['subscription_config'])
-    
-    # Update setup stage
     if 'setup_stage' in data:
-        school.update_setup_stage(data['setup_stage'])
+        # Use the model method if it exists, otherwise set directly
+        if hasattr(school, 'update_setup_stage'):
+            school.update_setup_stage(data['setup_stage'])
+        else:
+            school.setup_stage = data['setup_stage']
     
     try:
         db.session.commit()
+        print(f"✅ School {school.name} updated successfully!")
         return jsonify({
             'message': 'School updated successfully',
             'school': school.to_dict()
         })
     except Exception as e:
         db.session.rollback()
+        print(f"❌ DB Error during school update: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
 # ============ GET SCHOOL STATS ============

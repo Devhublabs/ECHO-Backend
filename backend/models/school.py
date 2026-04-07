@@ -3,7 +3,7 @@ School Model for Echo Platform
 Core entity representing educational institutions
 """
 from datetime import datetime, timedelta
-from app import db
+from extensions import db
 from sqlalchemy import Column, String, Boolean, Integer, Text, DateTime, JSON
 from sqlalchemy.orm import relationship, validates
 import random

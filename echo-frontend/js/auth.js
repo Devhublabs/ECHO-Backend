@@ -3,8 +3,14 @@
 //  Gateway: https://echo-backend-gateway.up.railway.app
 // ─────────────────────────────────────────
 
+function getApiBase() {
+    const host = (window.location.hostname || '').toLowerCase();
+    const isLocal = host === 'localhost' || host === '127.0.0.1' || host === '::1';
+    return isLocal ? 'http://localhost:8080' : 'https://echo-backend-gateway.up.railway.app';
+}
+
 const Auth = {
-    API_BASE: 'https://echo-backend-gateway.up.railway.app',
+    API_BASE: getApiBase(),
     STORAGE_KEY: 'echo_current_user',
 
     // Save session after login

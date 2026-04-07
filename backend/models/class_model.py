@@ -5,7 +5,7 @@ Represents a class (level + stream) for a specific academic session
 
 from datetime import datetime
 import uuid
-from app import db
+from extensions import db
 from sqlalchemy.orm import validates
 from sqlalchemy import UniqueConstraint
 

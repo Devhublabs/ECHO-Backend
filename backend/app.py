@@ -7,13 +7,12 @@ import os
 from dotenv import load_dotenv
 import importlib
 from datetime import datetime
+from extensions import db, migrate
 
 # Load environment variables
 load_dotenv()
 
-# Initialize extensions
-db = SQLAlchemy()
-migrate = Migrate()
+# Initialize extensions (db, migrate) live in extensions.py
 
 def get_database_uri():
     """Get database URI with Railway/PostgreSQL support"""

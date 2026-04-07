@@ -4,7 +4,13 @@
 //  Base: https://echo-backend-gateway.up.railway.app
 // ─────────────────────────────────────────
 
-const API_BASE = 'https://echo-backend-gateway.up.railway.app';
+function getApiBase() {
+    const host = (window.location.hostname || '').toLowerCase();
+    const isLocal = host === 'localhost' || host === '127.0.0.1' || host === '::1';
+    return isLocal ? 'http://localhost:8080' : 'https://echo-backend-gateway.up.railway.app';
+}
+
+const API_BASE = getApiBase();
 
 const Api = {
 
@@ -171,7 +177,9 @@ const Api = {
         const token = localStorage.getItem('echo_token');
         if (!token) return null;
 
-        const ws = new WebSocket(`wss://echo-backend-gateway.up.railway.app/ws?token=${token}`);
+        const wsScheme = API_BASE.startsWith('https://') ? 'wss://' : 'ws://';
+        const wsHost = API_BASE.replace(/^https?:\/\//, '');
+        const ws = new WebSocket(`${wsScheme}${wsHost}/ws?token=${token}`);
         let pingInterval;
 
         ws.onopen = function() {

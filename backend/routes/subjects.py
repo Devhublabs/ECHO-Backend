@@ -1,6 +1,6 @@
 #routes/subjects.py
 from flask import Blueprint, request, jsonify
-from app import db
+from extensions import db
 from models.subject import Subject
 from models.teacher import Teacher
 

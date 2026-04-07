@@ -4,10 +4,7 @@ This will be inherited by all other models.
 """
 from datetime import datetime
 import uuid
-from flask_sqlalchemy import SQLAlchemy
-
-# We'll get db from app.py later
-db = SQLAlchemy()
+from extensions import db
 
 def generate_uuid():
     """Generate a UUID string for primary keys"""

@@ -4,7 +4,7 @@ Represents a subject taught by a teacher to a class
 """
 from datetime import datetime
 import uuid
-from app import db
+from extensions import db
 from sqlalchemy.orm import validates
 
 

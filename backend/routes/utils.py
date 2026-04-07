@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from app import db
+from extensions import db
 from models.school import School
 from models.class_model import Class
 import re

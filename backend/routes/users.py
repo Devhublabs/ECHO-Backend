@@ -1,7 +1,7 @@
 
 #routes/users.py
 from flask import Blueprint, request, jsonify
-from app import db
+from extensions import db
 from models.user import User
 from models.school import School
 

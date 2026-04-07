@@ -5,7 +5,7 @@ Represents enrolled learners within a school
 
 from datetime import datetime
 import uuid
-from app import db
+from extensions import db
 from sqlalchemy.orm import validates
 from sqlalchemy import UniqueConstraint
 
